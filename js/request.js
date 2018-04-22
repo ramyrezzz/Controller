@@ -1,7 +1,7 @@
-function fireAPICall() {
+function fireAPICall(hostNameAPI) {
     var rsp = '{"rami" : 1}';
     $.ajax({
-        url: `https://reqres.in/api/users/2`,
+        url: hostNameAPI,
         type: 'GET',
         data: {
             format: 'json'
