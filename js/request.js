@@ -1,30 +1,47 @@
-function fireAPICall(hostNameAPI) {
-    var rsp = '{"rami" : 1}';
+function fireAPICall(endPoint) {
+
+    $('#responseTextField').val("");
+
+    format = 'jsonp';
+    branch = 'master';
+    hostName = 'http://163.172.129.226:5005/' + endPoint;
+    console.log(endPoint);
+
+    if (endPoint.includes('deploy'))
+        branch = document.getElementById("branchID").value;
+
     $.ajax({
-        url: hostNameAPI,
+        url: hostName,
         type: 'GET',
+        accept: 'application/json',
+        dataType: 'json',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
         data: {
-            format: 'json'
+            format,
+            branch
         },
         success: function(response) {
+            console.log("Request success");
             rsp = JSON.stringify(response);
-            $('#responseTextField').attr('placeholder', rsp);
-            //console.log(response)
+            $('#responseTextField').val(rsp);
         },
-        error: function() {
-            //console.log("error")
+        error: function(response) {
+            console.log("Request FAIL");
+            rsp = JSON.stringify(response);
+            $('#responseTextField').val(rsp);
         }
     });
-
-    $('#dropdown-menu2').show();
+    $('#dropdown-menu2').hide();
 }
 
 function clearFunction() {
     if ($('#responseTextField').attr('placeholder') == '') {
-        $('#responseTextField').attr('placeholder', 'Label is empty already');
+        $('#responseTextField').val('Label is empty already');
         return;
     }
 
     $('#dropdown-menu2').hide();
-    $('#responseTextField').attr('placeholder', 'Response will be printed here');
+    $('#responseTextField').val('Response will be printed here');
 }

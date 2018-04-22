@@ -31,20 +31,27 @@
         <div class="hero-head">
             <nav class="main-nav navbar ">
                 <div class="container">
-                    <div class="navbar-start">
-                        <a class="navbar-item" href="/Controller/index.html">
-                            <img src="img/refresh.png" alt="" class="logo">
-                            <h1 class="title is-5">Refresh</h1>
-                        </a>
-                        <a class="navbar-item " target="_blank" href="/Controller/help.html">Help</a>
-                    </div>
-                    <span class="navbar-toggle">
-                    </span>
-                    <div class="navbar-end navbar-menu">
+                    <div class="column">
+
+                        <div class="navbar-start">
+                            <a class="navbar-item" href="/index.html">
+                                <img src="img/refresh.png" alt="" class="logo">
+                                <h1 class="title is-5">Refresh</h1>
+                            </a>
+                            <a class="navbar-item " target="_blank" href="/help.html">Help</a>
+                            <a class="navbar-item" href="#" onclick="fireAPICall('deployContainer')">
+                                <img src="img/refresh.png" alt=" " class="logo" align="center">
+                                <h2 class="title is-5"> Deploy </h2>
+                            </a>
+                            <input class="input is-rounded" type="text" placeholder="Branch input" id="branchID" width="48" height="48">
+                        </div>
+                        <span class="navbar-toggle">
+                        </span>
+                        <div class="navbar-end navbar-menu">
+                        </div>
                     </div>
                 </div>
             </nav>
-
         </div>
         <!-- Hero content: will be in the middle -->
         <div class="hero-body">
@@ -53,9 +60,9 @@
                     Test Scenario
                 </h1>
                 <p>
-                    <a class="button is-primary is-inverted"  title="Start the test" onclick="fireAPICall()">START</a>
-                    <a class="button is-danger is-active" href="/Controller/index.html" title="Stop the test">STOP</a>
-                    <a class="button is-warning is-active" href="/Controller/index.html" title="Pause the current Running scenario">PAUSE</a>
+                    <a class="button is-primary is-inverted"  title="Start the test" onclick="">START</a>
+                    <a class="button is-danger is-active" href="index.html" title="Stop the test">STOP</a>
+                    <a class="button is-warning is-active" href="index.html" title="Pause the current Running scenario">PAUSE</a>
                 </p>
             </div>
             <h2 class="title"> Output </h2>
@@ -72,25 +79,25 @@
         <div class="column">
             <div class="dropdown">
                 <div class="dropdown-trigger">
-                    <button class="button is-info" aria-haspopup="true" aria-controls="dropdown-menu2" onclick="fireAPICall('http://163.172.129.226:5005/stats')">
-                        <span>Fire API Call - Get Stats</span>
+                    <button class="button is-info" aria-haspopup="true" aria-controls="dropdown-menu2" onclick="$('#dropdown-menu2').show()" )>
+                        <span>OPTIONS</span>
                     </button>
                 </div>
-                <!--<div class="dropdown-menu" id="dropdown-menu2" role="menu">-->
-                    <!--<div class="dropdown-content">-->
-                        <!--<div class="dropdown-item">-->
-                            <!--<p>You can insert <strong>any type of content</strong> within the dropdown menu.</p>-->
-                        <!--</div>-->
-                        <!--<hr class="dropdown-divider">-->
-                        <!--<div class="dropdown-item">-->
-                            <!--<p>You simply need to use a <code>&lt;div&gt;</code> instead.</p>-->
-                        <!--</div>-->
-                        <!--<hr class="dropdown-divider">-->
-                        <!--<a href="#" class="dropdown-item">-->
-                            <!--This is a link-->
-                        <!--</a>-->
-                    <!--</div>-->
-                <!--</div>-->
+                <div class="dropdown-menu" id="dropdown-menu2" role="menu">
+                    <div class="dropdown-content">
+                        <a href="#" class="dropdown-item" onclick="fireAPICall('stats')">
+                            <p>Fire <strong>API Call</strong> Get Stats</p>
+                        </a>
+                        <hr class="dropdown-divider">
+                        <a href="#" class="dropdown-item" onclick="fireAPICall('health')">
+                            <p>Fire <strong>API Call</strong> HEALTH</p>
+                        </a>
+                        <hr class="dropdown-divider">
+                        <a href="#" class="dropdown-item" onclick="fireAPICall('projects')">
+                            <p>Fire <strong>API Call</strong> Projects</p>
+                        </a>
+                    </div>
+                </div>
             </div>
             <div class="dropdown">
                 <div class="dropdown-trigger">
