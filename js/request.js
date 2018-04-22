@@ -1,22 +1,33 @@
 function fireAPICall(hostNameAPI) {
-    var rsp = '{"rami" : 1}';
+
+    var type = 'GET';
+    if (hostNameAPI.endsWith("/deployContainer")) {
+        type = 'POST';
+    }
+
     $.ajax({
         url: hostNameAPI,
-        type: 'GET',
+        type: type,
         data: {
-            format: 'json'
+            format: 'jsonp'
         },
         success: function(response) {
-            rsp = JSON.stringify(response);
-            $('#responseTextField').attr('placeholder', rsp);
-            //console.log(response)
+            console.log("success");
+            rsp = JSON.stringify('{"cpu": 0.2}');
+            $('#responseTextField').val(rsp);
         },
         error: function() {
-            //console.log("error")
+            console.log("error");
         }
     });
+    $('#dropdown-menu2').hide();
+}
 
-    $('#dropdown-menu2').show();
+function prepareCall(hostName, buttonID) {
+
+    var x = fireAPICall(hostName);
+    $(buttonID).attr('placeholder', x);
+    $(buttonID).hide();
 }
 
 function clearFunction() {
