@@ -6,7 +6,7 @@
         <title>Controller Main view</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="theme-color" content="#34495e">
+        <meta name="theme-color" content="#FF0000">
         <meta name="msapplication-TileColor" content="#FFFFFF">
 
         <link rel="manifest" href="site.webmanifest">
@@ -24,7 +24,6 @@
         </style>
     </head>
 
-
     <body class="theme-page">
     <section class="hero is-primary">
         <!-- Hero header: will stick at the top -->
@@ -32,16 +31,22 @@
             <nav class="main-nav navbar ">
                 <div class="container">
                     <div class="column">
-
                         <div class="navbar-start">
+                            <a class="navbar-item">
+                                <img src="img/favicon-194x194.png" alt="logo">
+                                <span class="title is-5" style="color:darkred; align-items: right" ></span>
+                            </a>
+                            <a class="navbar-item">
+                                <span class="title is-5" style="color:darkblue; align-items: right" ></span>
+                            </a>
                             <a class="navbar-item" href="/index.html">
                                 <img src="img/refresh.png" alt="" class="logo">
-                                <h1 class="title is-5">Refresh</h1>
+                                <h1 class="title is-5" style="color:darkred" >Refresh</h1>
                             </a>
-                            <a class="navbar-item " target="_blank" href="/help.html">Help</a>
+                            <a class="navbar-item " target="_blank" href="/help.html"  style="color:darkred" >Help</a>
                             <a class="navbar-item" href="#" onclick="fireAPICall('deployContainer')">
                                 <img src="img/refresh.png" alt=" " class="logo" align="center">
-                                <h2 class="title is-5"> Deploy </h2>
+                                <h2 class="title is-5" style="color:darkred" > Deploy </h2>
                             </a>
                             <input class="input is-rounded" type="text" placeholder="Branch input" id="branchID" width="48" height="48">
                         </div>
@@ -56,7 +61,7 @@
         <!-- Hero content: will be in the middle -->
         <div class="hero-body">
             <div class="container">
-                <h1 class="title">
+                <h1 class="title" style="color:darkred" >
                     Test Scenario
                 </h1>
                 <p>
@@ -65,7 +70,7 @@
                     <a class="button is-warning is-active" href="index.html" title="Pause the current Running scenario">PAUSE</a>
                 </p>
             </div>
-            <h2 class="title"> Output </h2>
+            <h2 class="title" style="color:darkred" > Output </h2>
             <div class="columns is-multiline">
                 <div class="field">
                     <label class="label">Response</label>
