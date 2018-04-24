@@ -9,9 +9,7 @@
         <meta name="theme-color" content="#34495e">
         <meta name="msapplication-TileColor" content="#FFFFFF">
 
-        <link rel="manifest" href="site.webmanifest">
         <link rel="apple-touch-icon" href="/pics/icon.png">
-        <!-- Place favicon.ico in the root directory -->
 
         <link href="css/bulmaswatch.min.css" rel="stylesheet">
         <script src="js/request.js" type="text/javascript"></script>
@@ -39,7 +37,8 @@
                                 <h1 class="title is-5">Refresh</h1>
                             </a>
                             <a class="navbar-item " target="_blank" href="/help.html">Help</a>
-                            <a class="navbar-item" href="#" onclick="fireAPICall('deployContainer')">
+                            <a class="navbar-item" href="#" onclick="fireAPICall('deployContainer', '')" id="deployID">
+                                <div style="color:#fff" class="ld ld-ring ld-spin"></div>
                                 <img src="img/refresh.png" alt=" " class="logo" align="center">
                                 <h2 class="title is-5"> Deploy </h2>
                             </a>
@@ -79,23 +78,23 @@
         <div class="column">
             <div class="dropdown">
                 <div class="dropdown-trigger">
-                    <button class="button is-info" aria-haspopup="true" aria-controls="dropdown-menu2" onclick="$('#dropdown-menu2').show()" )>
+                    <button class="button is-info" aria-haspopup="true" aria-controls="dropdown-menu2" onclick="getDropdownAPIOptions('select-Branch')")>
                         <span>OPTIONS</span>
                     </button>
                 </div>
                 <div class="dropdown-menu" id="dropdown-menu2" role="menu">
-                    <div class="dropdown-content">
-                        <a href="#" class="dropdown-item" onclick="fireAPICall('stats')">
-                            <p>Fire <strong>API Call</strong> Get Stats</p>
-                        </a>
-                        <hr class="dropdown-divider">
-                        <a href="#" class="dropdown-item" onclick="fireAPICall('health')">
-                            <p>Fire <strong>API Call</strong> HEALTH</p>
-                        </a>
-                        <hr class="dropdown-divider">
-                        <a href="#" class="dropdown-item" onclick="fireAPICall('projects')">
-                            <p>Fire <strong>API Call</strong> Projects</p>
-                        </a>
+                    <div class="dropdown-content" id="select-Branch">
+                        <!--<a href="#" class="dropdown-item" onclick="fireAPICall('stats')">-->
+                            <!--<p>Fire <strong>API Call</strong> Get Stats</p>-->
+                        <!--</a>-->
+                        <!--<hr class="dropdown-divider">-->
+                        <!--<a href="#" class="dropdown-item" onclick="fireAPICall('health')">-->
+                            <!--<p>Fire <strong>API Call</strong> HEALTH</p>-->
+                        <!--</a>-->
+                        <!--<hr class="dropdown-divider">-->
+                        <!--<a href="#" class="dropdown-item" onclick="fireAPICall('projects')">-->
+                            <!--<p>Fire <strong>API Call</strong> Projects</p>-->
+                        <!--</a>-->
                     </div>
                 </div>
             </div>

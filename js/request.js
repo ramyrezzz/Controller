@@ -1,14 +1,15 @@
-function fireAPICall(endPoint) {
+function fireAPICall(endPoint, branch) {
 
     $('#responseTextField').val("");
 
     format = 'jsonp';
-    branch = 'master';
     hostName = 'http://163.172.129.226:5005/' + endPoint;
-    console.log(endPoint);
 
-    if (endPoint.includes('deploy'))
+    if (endPoint.includes('deploy') && branch == '')
         branch = document.getElementById("branchID").value;
+
+    if (branch == '')
+        branch = 'master';
 
     $.ajax({
         url: hostName,
@@ -26,6 +27,7 @@ function fireAPICall(endPoint) {
             console.log("Request success");
             rsp = JSON.stringify(response);
             $('#responseTextField').val(rsp);
+            return rsp;
         },
         error: function(response) {
             console.log("Request FAIL");
@@ -33,6 +35,10 @@ function fireAPICall(endPoint) {
             $('#responseTextField').val(rsp);
         }
     });
+}
+
+function deployFunction(branchName) {
+    fireAPICall('deployContainer', branchName);
     $('#dropdown-menu2').hide();
 }
 
