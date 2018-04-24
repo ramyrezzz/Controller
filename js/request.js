@@ -37,9 +37,7 @@ function fireAPICall(endPoint, branch) {
         },
         error: function(response) {
             console.log("Request FAIL");
-            let rsp = alert(JSON.stringify(response));
-            // rsp = JSON.stringify(response);
-            $('#responseTextField').val(rsp);
+            $('#responseTextField').val(response);
         }
     });
 }
