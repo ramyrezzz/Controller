@@ -17,7 +17,7 @@ function reload() {
 
 function buildDivForBranch(divname, list) {
 
-    var newDiv=document.createElement('div');
+    var newDiv = document.createElement('div');
     var html = '', i;
     $('#dropdown-menu2').show();
     if ($('#select-Branch').children().length > 0)

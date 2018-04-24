@@ -4,16 +4,21 @@ function fireAPICall(endPoint, branch) {
 
     format = 'jsonp';
     hostName = 'http://163.172.129.226:5005/' + endPoint;
+    type = 'GET';
+    users = '';
 
-    if (endPoint.includes('deploy') && branch == '')
-        branch = document.getElementById("branchID").value;
+    if (endPoint.includes('updateVusers')) {
+        users = document.getElementById("vUsersID").value;
+        if (users == '')
+            users = '1'
+    }
 
     if (branch == '')
-        branch = 'master';
+        branch = 'accesa';
 
     $.ajax({
         url: hostName,
-        type: 'GET',
+        type: type,
         accept: 'application/json',
         dataType: 'json',
         headers: {
@@ -21,7 +26,8 @@ function fireAPICall(endPoint, branch) {
         },
         data: {
             format,
-            branch
+            branch,
+            users
         },
         success: function(response) {
             console.log("Request success");
