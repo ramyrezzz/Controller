@@ -25,16 +25,25 @@ function fireAPICall(endPoint, branch) {
         },
         success: function(response) {
             console.log("Request success");
-            rsp = JSON.stringify(response);
+            let rsp = JSON.stringify(response);
             $('#responseTextField').val(rsp);
+            if (endPoint == 'branches') {
+                showDropDown(rsp);
+            }
             return rsp;
         },
         error: function(response) {
             console.log("Request FAIL");
-            rsp = JSON.stringify(response);
+            let rsp = alert(JSON.stringify(response));
+            // rsp = JSON.stringify(response);
             $('#responseTextField').val(rsp);
         }
     });
+}
+
+function showDropDown(response) {
+    listObj = JSON.parse(response).branchList;
+    buildDivForBranch('select-Branch', listObj);
 }
 
 function deployFunction(branchName) {
