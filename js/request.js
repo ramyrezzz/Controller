@@ -30,6 +30,9 @@ function fireAPICall(endPoint, branch) {
             if (endPoint == 'branches') {
                 showDropDown(rsp);
             }
+            if (endPoint.includes('deploy')) {
+                window.reload();
+            }
             return rsp;
         },
         error: function(response) {

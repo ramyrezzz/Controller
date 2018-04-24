@@ -8,15 +8,16 @@ function reload() {
 }
 
 function buildDivForBranch(divname, list) {
+
     var newDiv=document.createElement('div');
-    var html = '', branches = list, i;
+    var html = '', i;
     $('#dropdown-menu2').show();
+    if ($('#select-Branch').children().length > 0)
+        return;
 
-    console.log(branches)
-
-    for(i = 0; i < branches.length; i++) {
+    for(i = 0; i < list.length; i++) {
         // html += "<option value='" + branches[i] + "'>" + branches[i] + "</option>";
-        html += '<a href=\"#\" class=\"dropdown-item\" onclick=\"deployFunction(\'' +  branches[i] + "\')\" id=\"" +  branches[i] + '\"' + "<p>Fire <strong>" + branches[i] + "</strong>" + ' ' +  'API call' + '</p></a>' ;
+        html += '<a href=\"#\" class=\"dropdown-item\" onclick=\"deployFunction(\'' +  list[i] + "\')\" id=\"" +  list[i] + '\"' + "<p>Fire <strong>" + list[i] + "</strong>" + ' ' +  'API call' + '</p></a>' ;
     }
 
     html += '</select>';
