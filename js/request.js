@@ -1,16 +1,12 @@
-function fireAPICall(endPoint, branch) {
+function fireAPICall(endPoint, branch, rate = '1', users = '1') {
 
     $('#responseTextField').val("");
 
     format = 'jsonp';
     hostName = 'http://163.172.129.226:5005/' + endPoint;
-    type = 'GET';
-    users = '';
 
     if (endPoint.includes('updateVusers')) {
         users = document.getElementById("vUsersID").value;
-        if (users == '')
-            users = '1'
     }
 
     if (branch == '')
@@ -18,7 +14,7 @@ function fireAPICall(endPoint, branch) {
 
     $.ajax({
         url: hostName,
-        type: type,
+        type: 'GET',
         accept: 'application/json',
         dataType: 'json',
         headers: {
@@ -27,14 +23,16 @@ function fireAPICall(endPoint, branch) {
         data: {
             format,
             branch,
-            users
+            users,
+            rate
         },
         success: function(response) {
             console.log("Request success");
-            let rsp = JSON.stringify(response);
+            let rsp = JSON.stringify(response, undefined, 4);
             $('#responseTextField').val(rsp);
             if (endPoint == 'branches') {
                 showDropDown(rsp);
+                $('#responseTextField').click();
             }
             if (endPoint.includes('deploy')) {
                 window.reload();

@@ -58,20 +58,29 @@
                     Test Scenario
                 </h1>
                 <p>
-                    <a class="button is-primary is-inverted"  title="Start the test" onclick="">START</a>
-                    <a class="button is-danger is-active" href="index.html" title="Stop the test">STOP</a>
-                    <a class="button is-warning is-active" href="index.html" title="Pause the current Running scenario">PAUSE</a>
+                    <a class="button is-primary is-inverted"  title="Start the test" onclick="fireAPICall('updateVusers', '')" id="startButtonID">START</a>
+                    <a class="button is-warning is-active" href="index.html" title="Pause the current Running scenario", onclick="fireAPICall('updateVusers', '', '1', '0')">PAUSE</a>
+                    <a class="button is-danger is-active" href="index.html" title="Stop the test" onclick="fireAPICall('updateVusers', '', '1', '1')">STOP</a>
                 </p>
             </div>
-            <h2 class="title"> Output </h2>
-            <div class="columns is-multiline">
-                <div class="field">
-                    <label class="label">Response</label>
-                    <p class="control">
-                        <textarea class="textarea" placeholder="Response will be printed here" aria-autocomplete="list" id="responseTextField"></textarea>
-                    </p>
-                </div>
+            <div class="container">
+                <h5 class="label">  </h5>
+                <p>
+                    <input class="input is-rounded" type="text" placeholder="Users / second" id="UsersPerSecondID" style="width:150px">
+                </p>
             </div>
+            <h5 class="title">  </h5>
+            <pre>
+                <textarea class="textarea" placeholder="Response will be printed here" aria-autocomplete="list" id="responseTextField" onclick="auto_grow(this)"></textarea>
+            </pre>
+
+            <!--<div class="columns is-multiline">-->
+                <!--<div class="field">-->
+                    <!--<label class="label">Response</label>-->
+                    <!--<p class="control">-->
+                    <!--</p>-->
+                <!--</div>-->
+            <!--</div>-->
         </div>
         </div>
         <div class="column">
