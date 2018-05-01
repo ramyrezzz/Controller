@@ -4,9 +4,15 @@ function fireAPICall(endPoint, branch, rate = '1', users = '1') {
 
     format = 'jsonp';
     hostName = 'http://163.172.129.226:5005/' + endPoint;
+    usersInput = document.getElementById("vUsersID").value;
 
-    if (endPoint.includes('updateVusers')) {
-        users = document.getElementById("vUsersID").value;
+    if (endPoint.includes('updateVusers') && usersInput != '') {
+        users = usersInput;
+    }
+
+    usersRateInput = document.getElementById('usersPerSecondID').value;
+    if (usersRateInput != '') {
+        rate = usersRateInput;
     }
 
     if (branch == '')

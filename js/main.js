@@ -34,5 +34,36 @@ function buildDivForBranch(divname, list) {
 
 function auto_grow(element) {
     element.style.height = "5px";
-    element.style.height = (element.scrollHeight)+"px";
+    element.style.height = (element.scrollHeight) + "px";
+}
+
+function updateStartStopElement(element) {
+    text = element.innerText;
+    if (text == 'START') {
+        element.innerText = 'STOP';
+        element.className = "button is-danger is-active";
+        fireAPICall('updateVusers', '', '1', '1');
+        document.getElementById('testStateId').style.visibility = "visible";
+    }
+    else {
+        element.innerText = 'START';
+        element.className = "button is-primary is-inverted";
+        fireAPICall('updateVusers', '', '0', '0');
+        document.getElementById('testStateId').style.visibility = "hidden";
+    }
+}
+
+function updatePauseResumeElement(element) {
+    text = element.innerText;
+    if (text == 'PAUSE') {
+        element.innerText = 'RESUME';
+        element.className = "button is-success is-hovered";
+        fireAPICall('updateVusers', '', '1', '0');
+        return;
+    }
+    else {
+        element.innerText = 'PAUSE';
+        element.className = "button is-warning is-active";
+        fireAPICall('updateVusers', '', '0', '1');
+    }
 }
