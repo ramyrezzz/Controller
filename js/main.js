@@ -1,6 +1,8 @@
 /* When the user clicks on the button,
 toggle between hiding and showing the dropdown content */
 
+var stopTimer = 0;
+
 $(document).mouseup(function(e) {
     var container = $(".dropdown-menu");
     // if the target of the click isn't the container nor a descendant of the container
@@ -43,12 +45,14 @@ function updateStartStopElement(element) {
         element.innerText = 'STOP';
         element.className = "button is-danger is-active";
         fireAPICall('updateVusers', '', '1', '1');
+        startTimer();
         document.getElementById('testStateId').style.visibility = "visible";
     }
     else {
         element.innerText = 'START';
         element.className = "button is-primary is-inverted";
         fireAPICall('updateVusers', '', '0', '0');
+        stopTimer = 1;
         document.getElementById('testStateId').style.visibility = "hidden";
     }
 }
@@ -66,4 +70,31 @@ function updatePauseResumeElement(element) {
         element.className = "button is-warning is-active";
         fireAPICall('updateVusers', '', '0', '1');
     }
+}
+
+function startTimer() {
+
+    // Set the date we're counting down to
+    var startTimerDateObj = new Date().getTime();
+
+    // Update the count down every 1 second
+    var x = setInterval(function() {
+
+        // Get todays date and time
+        var now = new Date().getTime();
+
+        // Find the distance between now an the count down date
+        var distance = now - startTimerDateObj;
+
+        // Time calculations for days, hours, minutes and seconds
+        var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        if (stopTimer < 1) {
+            // Display the result in the element with id="demo"
+            document.getElementById("timerID").innerHTML = hours + "h "
+                + minutes + "m " + seconds + "s ";
+        }
+    }, 1000);
 }

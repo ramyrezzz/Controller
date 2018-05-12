@@ -26,10 +26,11 @@
     <section class="hero is-primary">
         <!-- Hero header: will stick at the top -->
         <div class="hero-head">
+            <img src="img/accesa_logo_bg.png" style="height: 68px; width: auto;float:right;">
+
             <nav class="main-nav navbar ">
                 <div class="">
                     <div class="column">
-
                         <div class="navbar-start">
                             <a class="navbar-item" href="#" onclick="reload()">
                                 <img src="img/refresh.png" alt="" class="logo">
@@ -43,6 +44,9 @@
                             </a>
                             <input class="input is-rounded" type="text" placeholder="vUsers" id="vUsersID" value="30" style="width:125px">
                         </div>
+                        <!--<div class="navbar-tabs">-->
+
+                        <!--</div>-->
                         <span class="navbar-toggle">
                         </span>
                         <div class="navbar-end navbar-menu">
@@ -50,6 +54,11 @@
                     </div>
                 </div>
             </nav>
+            <div class="column" id="TitleBar">
+                <a>
+                    <p class="subtitle is-5 has-text-weight-semibold " id="timerID" style="float: right; width: 125px"> 0h 0m 0s </p>
+                </a>
+            </div>
         </div>
         <!-- Hero content: will be in the middle -->
         <div class="hero-body">
@@ -74,14 +83,6 @@
             <pre>
                 <textarea class="textarea" placeholder="Response will be printed here" aria-autocomplete="list" id="responseTextField" onclick="auto_grow(this)"></textarea>
             </pre>
-
-            <!--<div class="columns is-multiline">-->
-                <!--<div class="field">-->
-                    <!--<label class="label">Response</label>-->
-                    <!--<p class="control">-->
-                    <!--</p>-->
-                <!--</div>-->
-            <!--</div>-->
         </div>
         </div>
         <div class="column">
