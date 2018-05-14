@@ -5,6 +5,7 @@ function fireAPICall(endPoint, branch, rate = '1', users = '1') {
     format = 'jsonp';
     hostName = 'http://163.172.129.226:5005/' + endPoint;
     usersInput = document.getElementById("vUsersID").value;
+    totalUsers = document.getElementById("totalUsersID").value;
 
     if (endPoint.includes('updateVusers') && usersInput != '') {
         users = usersInput;
@@ -30,7 +31,8 @@ function fireAPICall(endPoint, branch, rate = '1', users = '1') {
             format,
             branch,
             users,
-            rate
+            rate,
+            totalUsers
         },
         success: function(response) {
             console.log("Request success");

@@ -6,8 +6,8 @@
         <title>Controller Main view</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="theme-color" content="#34495e">
-        <meta name="msapplication-TileColor" content="#FFFFFF">
+        <meta name="theme-color" content="#273c42">
+        <meta name="msapplication-TileColor" content="#273c42">
 
         <link rel="apple-touch-icon" href="/pics/icon.png">
 
@@ -27,7 +27,6 @@
         <!-- Hero header: will stick at the top -->
         <div class="hero-head">
             <img src="img/accesa_logo_bg.png" style="height: 68px; width: auto;float:right;">
-
             <nav class="main-nav navbar ">
                 <div class="">
                     <div class="column">
@@ -36,17 +35,16 @@
                                 <img src="img/refresh.png" alt="" class="logo">
                                 <h1 class="title is-5">Refresh</h1>
                             </a>
-                            <a class="navbar-item " target="_blank" href="/help.html">Help</a>
-                            <a class="navbar-item" href="#" onclick="fireAPICall('updateVusers', '')" id="deployID">
-                                <div style="color:#fff" class="ld ld-ring ld-spin"></div>
-                                <img src="img/refresh.png" alt=" " class="logo" align="center">
-                                <h2 class="title is-5"> Resume  </h2>
-                            </a>
+                            <!--<a class="navbar-item" href="#" onclick="fireAPICall('updateVusers', '')" id="deployID">-->
+                                <!--<div style="color:#fff" class="ld ld-ring ld-spin"></div>-->
+                                <!--<img src="img/refresh.png" alt=" " class="logo" align="center">-->
+                                <!--<h2 class="title is-5"> Resume  </h2>-->
+                            <!--</a>-->
                             <input class="input is-rounded" type="text" placeholder="vUsers" id="vUsersID" value="30" style="width:125px">
+                            <input class="input is-rounded" type="text" placeholder="Total Users" id="totalUsersID" style="width:125px">
+                            <input class="input is-rounded" type="text" placeholder="Test Name" id="testNameID" style="width:250px">
+                            <a class="navbar-item " target="_blank" href="/help.html" style="float: right">Help</a>
                         </div>
-                        <!--<div class="navbar-tabs">-->
-
-                        <!--</div>-->
                         <span class="navbar-toggle">
                         </span>
                         <div class="navbar-end navbar-menu">

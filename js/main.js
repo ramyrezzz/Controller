@@ -44,7 +44,7 @@ function updateStartStopElement(element) {
     if (text == 'START') {
         element.innerText = 'STOP';
         element.className = "button is-danger is-active";
-        fireAPICall('updateVusers', '', '1', '1');
+        fireAPICall('updateVusers');
         startTimer();
         document.getElementById('testStateId').style.visibility = "visible";
     }
@@ -97,4 +97,8 @@ function startTimer() {
                 + minutes + "m " + seconds + "s ";
         }
     }, 1000);
+}
+
+function close_window() {
+    window.close();
 }
