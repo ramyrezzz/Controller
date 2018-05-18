@@ -17,16 +17,21 @@ function reload() {
     location.reload()
 }
 
-function buildDivForBranch(divname, list) {
+function buildDivForDropDown(divname, list) {
 
+    elementCount = document.getElementById(divname).childElementCount;
+    if (elementCount > 1) {
+        $('#dropdown-menu3').show();
+        return;
+    }
     var newDiv = document.createElement('div');
     var html = '', i;
-    $('#dropdown-menu2').show();
-    if ($('#select-Branch').children().length > 0)
+    $('#dropdown-menu3').show();
+    if ($(divname).children().length > 0)
         return;
 
     for(i = 0; i < list.length; i++)
-        html += '<a href=\"#\" class=\"dropdown-item\" onclick=\"deployFunction(\'' +  list[i] + "\')\" id=\"" +  list[i] + '\"' + "<p>Fire <strong>" + list[i] + "</strong>" + ' ' +  'API call' + '</p></a>' ;
+        html += '<a href=\"#\" class=\"dropdown-item\" onclick=\"deployBranch(\'' +  list[i] + "\')\" id=\"" +  list[i] + '\"' + "<p> Deploy '<strong>" + list[i].substring(3, list[i].length - 4) + "</strong>" + '\' ' +  'project' + '</p></a>' ;
 
     html += '</select>';
     newDiv.innerHTML= html;
@@ -51,7 +56,7 @@ function updateStartStopElement(element) {
     else {
         element.innerText = 'START';
         element.className = "button is-primary is-inverted";
-        fireAPICall('updateVusers', '', '0', '0');
+        fireAPICall('updateVusers');
         stopTimer = 1;
         document.getElementById('testStateId').style.visibility = "hidden";
     }
@@ -62,13 +67,13 @@ function updatePauseResumeElement(element) {
     if (text == 'PAUSE') {
         element.innerText = 'RESUME';
         element.className = "button is-success is-hovered";
-        fireAPICall('updateVusers', '', '1', '0');
+        fireAPICall('updateVusers');
         return;
     }
     else {
         element.innerText = 'PAUSE';
         element.className = "button is-warning is-active";
-        fireAPICall('updateVusers', '', '0', '1');
+        fireAPICall('updateVusers');
     }
 }
 

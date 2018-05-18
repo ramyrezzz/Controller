@@ -1,21 +1,20 @@
-function fireAPICall(endPoint, branch, rate = '1', users = '1') {
+var rate = 1;
+var users = 1;
+var totalUsers = 1;
+var branch = "";
+var testStatus = 0;
+
+function fireAPICall(endPoint) {
 
     $('#responseTextField').val("");
 
     format = 'jsonp';
     hostName = 'http://163.172.129.226:5005/' + endPoint;
-    usersInput = document.getElementById("vUsersID").value;
+    usersRateInput = document.getElementById("usersRateID").value;
     totalUsers = document.getElementById("totalUsersID").value;
 
-    if (endPoint.includes('updateVusers') && usersInput != '') {
+    if (endPoint.includes('updateVusers') && usersInput != '')
         users = usersInput;
-    }
-
-    usersRateInput = document.getElementById('usersPerSecondID').value;
-    if (usersRateInput != '') {
-        rate = usersRateInput;
-    }
-
     if (branch == '')
         branch = 'accesa';
 
@@ -29,9 +28,8 @@ function fireAPICall(endPoint, branch, rate = '1', users = '1') {
         },
         data: {
             format,
-            branch,
-            users,
-            rate,
+            usersRateInput,
+            testStatus,
             totalUsers
         },
         success: function(response) {
@@ -42,10 +40,71 @@ function fireAPICall(endPoint, branch, rate = '1', users = '1') {
                 showDropDown(rsp);
                 $('#responseTextField').click();
             }
-            if (endPoint.includes('deploy')) {
-                window.reload();
-            }
+
             return rsp;
+        },
+        error: function(response) {
+            console.log("Request FAIL");
+            $('#responseTextField').val(response);
+        }
+    });
+}
+
+
+function getProjects() {
+
+    $('#responseTextField').val("");
+
+    format = 'jsonp';
+    hostName = 'http://163.172.129.226:5005/projects';
+
+    $.ajax({
+        url: hostName,
+        type: 'GET',
+        accept: 'application/json',
+        dataType: 'json',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        data: {
+            format,
+        },
+        success: function(response) {
+            console.log("Request success");
+            let rsp = JSON.stringify(response, undefined, 4);
+            $('#responseTextField').val(rsp);
+            showpROJECTSDropDown(rsp);
+            $('#responseTextField').click();
+
+            return rsp;
+        },
+        error: function(response) {
+            console.log("Request FAIL");
+            $('#responseTextField').val(response);
+        }
+    });
+}
+
+function deployBranch(branchName) {
+
+    $('#responseTextField').val("");
+
+    format = 'jsonp';
+    hostName = 'http://163.172.129.226:5005/deployContainer';
+
+    $.ajax({
+        url: hostName,
+        type: 'GET',
+        accept: 'application/json',
+        dataType: 'json',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        data: {
+            branchName
+        },
+        success: function(response) {
+            window.reload();
         },
         error: function(response) {
             console.log("Request FAIL");
@@ -56,12 +115,12 @@ function fireAPICall(endPoint, branch, rate = '1', users = '1') {
 
 function showDropDown(response) {
     listObj = JSON.parse(response).branchList;
-    buildDivForBranch('select-Branch', listObj);
+    buildDivForDropDown('select-Branch', listObj);
 }
 
-function deployFunction(branchName) {
-    fireAPICall('deployContainer', branchName);
-    $('#dropdown-menu2').hide();
+function showpROJECTSDropDown(response) {
+    listObj = JSON.parse(response).projects;
+    buildDivForDropDown('select-Project', listObj)
 }
 
 function clearFunction() {

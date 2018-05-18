@@ -40,7 +40,7 @@
                                 <!--<img src="img/refresh.png" alt=" " class="logo" align="center">-->
                                 <!--<h2 class="title is-5"> Resume  </h2>-->
                             <!--</a>-->
-                            <input class="input is-rounded" type="text" placeholder="vUsers" id="vUsersID" value="30" style="width:125px">
+                            <input class="input is-rounded" type="text" placeholder="Users Rate" id="usersRateID" value="" style="width:125px">
                             <input class="input is-rounded" type="text" placeholder="Total Users" id="totalUsersID" style="width:125px">
                             <input class="input is-rounded" type="text" placeholder="Test Name" id="testNameID" style="width:250px">
                             <a class="navbar-item " target="_blank" href="/help.html" style="float: right">Help</a>
@@ -65,35 +65,48 @@
                     Test Scenario
                 </h1>
                 <p>
+                <div class="dropdown">
+                    <div class="dropdown-trigger">
+                        <button class="button is-info" aria-haspopup="true" aria-controls="dropdown-menu3" onclick="getProjects()")>
+                            <span>Projects</span>
+                        </button>
+                        <div class="dropdown-menu" id="dropdown-menu3" role="menu">
+                            <div class="dropdown-content" id="select-Project">
+                            </div>
+                        </div>
+                    </div>
+                </div>
                     <a class="button is-primary is-inverted"  title="Start the test" onclick="updateStartStopElement(this);" id="startButtonID">START</a>
                     <a class="button is-warning is-active" title="Pause the current Running scenario", onclick="updatePauseResumeElement(this)" id="pauseButtonId">PAUSE</a>
                     <a class="button is-primary is-loading is-rounded" id="testStateId" style="visibility: hidden; width:100px; border: solid 0px transparent;"></a>
                 </p>
             </div>
+            <!--<div class="container">-->
+                <!--<h5 class="label">  </h5>-->
+                <!--<p>-->
+                    <!--<input class="input is-rounded" type="text" placeholder="Total Users" id="totalUsers" style="width:110px">-->
+                    <!--<input class="input is-rounded" type="text" placeholder="Users / s" id="usersPerSecondID" style="width:110px">-->
+                <!--</p>-->
+            <!--</div>-->
             <div class="container">
-                <h5 class="label">  </h5>
-                <p>
-                    <input class="input is-rounded" type="text" placeholder="Total Users" id="totalUsers" style="width:110px">
-                    <input class="input is-rounded" type="text" placeholder="Users / s" id="usersPerSecondID" style="width:110px">
-                </p>
+                <h5 class="title">  </h5>
+                <pre>
+                    <textarea class="textarea" placeholder="Response will be printed here" aria-autocomplete="list" id="responseTextField" onclick="auto_grow(this)"></textarea>
+                </pre>
             </div>
-            <h5 class="title">  </h5>
-            <pre>
-                <textarea class="textarea" placeholder="Response will be printed here" aria-autocomplete="list" id="responseTextField" onclick="auto_grow(this)"></textarea>
-            </pre>
         </div>
         </div>
         <div class="column">
             <div class="dropdown">
                 <div class="dropdown-trigger">
-                    <button class="button is-info" aria-haspopup="true" aria-controls="dropdown-menu2" onclick="fireAPICall('branches', '')")>
-                        <span>OPTIONS</span>
+                    <button class="button is-info" aria-haspopup="true" aria-controls="dropdown-menu2" onclick="fireAPICall('branches')")>
+                        <span>Branches</span>
                     </button>
                 </div>
-                <div class="dropdown-menu" id="dropdown-menu2" role="menu">
-                    <div class="dropdown-content" id="select-Branch">
-                    </div>
-                </div>
+                <!--<div class="dropdown-menu" id="dropdown-menu2" role="menu">-->
+                    <!--<div class="dropdown-content" id="select-Branch">-->
+                    <!--</div>-->
+                <!--</div>-->
             </div>
             <div class="dropdown">
                 <div class="dropdown-trigger">
