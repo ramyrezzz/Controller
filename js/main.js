@@ -17,7 +17,29 @@ function reload() {
     location.reload()
 }
 
-function buildDivForDropDown(divname, list) {
+function buildBranchDeployDropdown(divname, list) {
+
+    elementCount = document.getElementById(divname).childElementCount;
+    if (elementCount > 1) {
+        $('#dropdown-menu2').show();
+        return;
+    }
+    var newDiv = document.createElement('div');
+    var html = '', i;
+    $('#dropdown-menu2').show();
+    if ($(divname).children().length > 0)
+        return;
+
+    for(i = 0; i < list.length; i++)
+        html += '<a href=\"#\" class=\"dropdown-item\" onclick=\"deployBranch(\'' +  list[i] + "\')\" id=\"" +  list[i] + '\"' + "<p> Deploy '<strong>" + list[i] + "</strong>" + '\' ' +  'branch' + '</p></a>' ;
+
+    html += '</select>';
+    newDiv.innerHTML= html;
+
+    document.getElementById(divname).appendChild(newDiv);
+}
+
+function buildSelectProjectDropdown(divname, list) {
 
     elementCount = document.getElementById(divname).childElementCount;
     if (elementCount > 1) {
@@ -31,13 +53,14 @@ function buildDivForDropDown(divname, list) {
         return;
 
     for(i = 0; i < list.length; i++)
-        html += '<a href=\"#\" class=\"dropdown-item\" onclick=\"deployBranch(\'' +  list[i] + "\')\" id=\"" +  list[i] + '\"' + "<p> Deploy '<strong>" + list[i].substring(3, list[i].length - 4) + "</strong>" + '\' ' +  'project' + '</p></a>' ;
+        html += '<a href=\"#\" class=\"dropdown-item\" onclick=\"useSelectProject(\'' +  list[i] + "\')\" id=\"" +  list[i] + '\"' + "<p> Use '<strong>" + list[i].substring(14, list[i].length - 4) + "</strong>" + '\' ' +  'project' + '</p></a>' ;
 
     html += '</select>';
     newDiv.innerHTML= html;
 
     document.getElementById(divname).appendChild(newDiv);
 }
+
 
 function auto_grow(element) {
     element.style.height = "5px";

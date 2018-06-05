@@ -13,7 +13,7 @@ function fireAPICall(endPoint) {
     usersRateInput = document.getElementById("usersRateID").value;
     totalUsers = document.getElementById("totalUsersID").value;
 
-    if (endPoint.includes('updateVusers') && usersInput != '')
+    if (endPoint.includes('updateVusers'))
         users = usersInput;
     if (branch == '')
         branch = 'accesa';
@@ -50,6 +50,39 @@ function fireAPICall(endPoint) {
     });
 }
 
+function getBranchList() {
+
+    $('#responseTextField').val("");
+
+    format = 'jsonp';
+    hostName = 'http://163.172.129.226:5005/branches';
+
+    $.ajax({
+        url: hostName,
+        type: 'GET',
+        accept: 'application/json',
+        dataType: 'json',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        data: {
+            format,
+        },
+        success: function(response) {
+            console.log("Request success");
+            let rsp = JSON.stringify(response, undefined, 4);
+            $('#responseTextField').val(rsp);
+            showDropDown(rsp);
+            $('#responseTextField').click();
+
+            return rsp;
+        },
+        error: function(response) {
+            console.log("Request FAIL");
+            $('#responseTextField').val(response);
+        }
+    });
+}
 
 function getProjects() {
 
@@ -75,7 +108,6 @@ function getProjects() {
             $('#responseTextField').val(rsp);
             showpROJECTSDropDown(rsp);
             $('#responseTextField').click();
-
             return rsp;
         },
         error: function(response) {
@@ -104,6 +136,7 @@ function deployBranch(branchName) {
             branchName
         },
         success: function(response) {
+            $('#responseTextField').val(response);
             window.reload();
         },
         error: function(response) {
@@ -115,12 +148,12 @@ function deployBranch(branchName) {
 
 function showDropDown(response) {
     listObj = JSON.parse(response).branchList;
-    buildDivForDropDown('select-Branch', listObj);
+    buildBranchDeployDropdown('select-Branch', listObj);
 }
 
 function showpROJECTSDropDown(response) {
     listObj = JSON.parse(response).projects;
-    buildDivForDropDown('select-Project', listObj)
+    buildSelectProjectDropdown('select-Project', listObj)
 }
 
 function clearFunction() {
