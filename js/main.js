@@ -17,6 +17,58 @@ function reload() {
     location.reload()
 }
 
+/**
+ * Responsible for Generating a unique Session ID !
+ * @returns {string}
+ */
+function generateUUID() {
+    return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+        s4() + '-' + s4() + s4() + s4();
+}
+
+function s4() {
+    return Math.floor((1 + Math.random()) * 0x10000)
+        .toString(16)
+        .substring(1);
+}
+
+function cookieHandler() {
+
+    var cookieName = "ControllerSessionID";
+
+    var cookieValue = getCookie(cookieName);
+    console.log("Cookie is: " + cookieValue);
+    if (cookieValue.length <= 16) {
+        var sessionUUID = generateUUID();
+        setCookie(cookieName, sessionUUID, 1)
+    }
+}
+
+function setCookie(cname, cvalue, exdays) {
+    console.log(cname + " " + cvalue);
+    var date = new Date();
+    date.setTime(date.getTime() + (exdays * 24 * 60 * 60 * 1000));
+    var expires = "expires=" + date.toUTCString();
+    console.log(expires, true);
+    document.cookie = cname + "=" + cvalue + "; " + expires + ";path=/";
+}
+
+function getCookie(cname) {
+    var name = cname + "=";
+    var decodedCookie = decodeURIComponent(document.cookie);
+    var ca = decodedCookie.split(';');
+    for(var i = 0; i <ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+        }
+    }
+    return "";
+}
+
 function buildBranchDeployDropdown(divname, list) {
 
     elementCount = document.getElementById(divname).childElementCount;

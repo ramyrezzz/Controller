@@ -136,6 +136,7 @@ function deployBranch(branchName) {
             branchName
         },
         success: function(response) {
+            console.log("Request SUCCESS");
             $('#responseTextField').val(response);
             window.reload();
         },
