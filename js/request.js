@@ -147,6 +147,45 @@ function deployBranch(branchName) {
     });
 }
 
+function updateSession() {
+    $('#responseTextField').val("");
+
+    format = 'jsonp';
+    hostName = 'http://163.172.129.226:5005/updateSession';
+    sessionID = getCookie(cookieName);
+    _id = sessionID;
+    usersRateInput = document.getElementById("usersRateID").value;
+    totalUsers = document.getElementById("totalUsersID").value;
+    testNameID = document.getElementById("testNameID").value;
+
+    $.ajax({
+        url: hostName,
+        type: 'POST',
+        accept: 'application/json',
+        dataType: 'json',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        data: {
+            sessionID,
+            _id,
+            usersRateInput,
+            totalUsers,
+            testNameID,
+            startTimerDateObj
+        },
+        success: function(response) {
+            console.log("Request SUCCESS");
+            let rsp = JSON.stringify(response, undefined, 4);
+            $('#responseTextField').val(rsp);
+        },
+        error: function(response) {
+            console.log("Request FAIL");
+            $('#responseTextField').val(response);
+        }
+    });
+}
+
 function showDropDown(response) {
     listObj = JSON.parse(response).branchList;
     buildBranchDeployDropdown('select-Branch', listObj);

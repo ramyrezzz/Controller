@@ -2,6 +2,8 @@
 toggle between hiding and showing the dropdown content */
 
 var stopTimer = 0;
+var cookieName = "ControllerSessionID";
+var startTimerDateObj;
 
 $(document).mouseup(function(e) {
     var container = $(".dropdown-menu");
@@ -13,6 +15,7 @@ $(document).mouseup(function(e) {
 function activateDropDown(objId) {
     document.getElementById(objId).classList.toggle("show");
 }
+
 function reload() {
     location.reload()
 }
@@ -33,11 +36,10 @@ function s4() {
 }
 
 function cookieHandler() {
-
-    var cookieName = "ControllerSessionID";
+    startTimerDateObj = "12345678901234"
 
     var cookieValue = getCookie(cookieName);
-    console.log("Cookie is: " + cookieValue);
+    console.log("Cookie is: " + cookieName + "-> " + cookieValue);
     if (cookieValue.length <= 16) {
         var sessionUUID = generateUUID();
         setCookie(cookieName, sessionUUID, 1)
@@ -155,7 +157,7 @@ function updatePauseResumeElement(element) {
 function startTimer() {
 
     // Set the date we're counting down to
-    var startTimerDateObj = new Date().getTime();
+    startTimerDateObj = new Date().getTime();
 
     // Update the count down every 1 second
     var x = setInterval(function() {
