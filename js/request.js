@@ -1,8 +1,7 @@
-var rate = 1;
+var rate = 0;
 var users = 1;
 var totalUsers = 1;
 var branch = "";
-var testStatus = 0;
 
 function fireAPICall(endPoint) {
 
@@ -157,6 +156,8 @@ function updateSession() {
     usersRateInput = document.getElementById("usersRateID").value;
     totalUsers = document.getElementById("totalUsersID").value;
     testNameID = document.getElementById("testNameID").value;
+    // projectID = document.getElementById("projectNameID").value;
+    projectID = 'hardcodedProjectJMX.jmx';
 
     $.ajax({
         url: hostName,
@@ -172,7 +173,43 @@ function updateSession() {
             usersRateInput,
             totalUsers,
             testNameID,
-            startTimerDateObj
+            startTimerDateObj,
+            projectID,
+            testStatus
+        },
+        success: function(response) {
+            console.log("Request SUCCESS");
+            let rsp = JSON.stringify(response, undefined, 4);
+            $('#responseTextField').val(rsp);
+        },
+        error: function(response) {
+            console.log("Request FAIL");
+            $('#responseTextField').val(response);
+        }
+    });
+}
+
+function clearAllSessions() {
+    sessionID = "";
+    clearSessionByID();
+    sessionID = getCookie(cookieName);
+}
+
+function clearSessionByID() {
+    $('#responseTextField').val("");
+
+    format = 'jsonp';
+    hostName = 'http://163.172.129.226:5005/clearSessionByID';
+    $.ajax({
+        url: hostName,
+        type: 'GET',
+        accept: 'application/json',
+        dataType: 'json',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        data: {
+            sessionID
         },
         success: function(response) {
             console.log("Request SUCCESS");
@@ -196,7 +233,7 @@ function showpROJECTSDropDown(response) {
     buildSelectProjectDropdown('select-Project', listObj)
 }
 
-function clearFunction() {
+function clearResponseFunction() {
     if ($('#responseTextField').attr('placeholder') == '') {
         $('#responseTextField').val('Label is empty already');
         return;

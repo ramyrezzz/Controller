@@ -1,13 +1,17 @@
 /* When the user clicks on the button,
 toggle between hiding and showing the dropdown content */
 
-var stopTimer = 0;
-var cookieName = "ControllerSessionID";
 var startTimerDateObj;
+var selectedProjectPath;
+
+var testStatus = 0;
+var loadFromSession = 0;
+var cookieName = "ControllerSessionID";
+
 
 $(document).mouseup(function(e) {
     var container = $(".dropdown-menu");
-    // if the target of the click isn't the container nor a descendant of the container
+    // If the target of the click isn't the container nor a descendant of the container
     if (!container.is(e.target) && container.has(e.target).length === 0)
         container.hide();
 });
@@ -25,8 +29,7 @@ function reload() {
  * @returns {string}
  */
 function generateUUID() {
-    return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
-        s4() + '-' + s4() + s4() + s4();
+    return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
 }
 
 function s4() {
@@ -36,7 +39,7 @@ function s4() {
 }
 
 function cookieHandler() {
-    startTimerDateObj = "12345678901234"
+    startTimerDateObj = "0";
 
     var cookieValue = getCookie(cookieName);
     console.log("Cookie is: " + cookieName + "-> " + cookieValue);
@@ -44,6 +47,12 @@ function cookieHandler() {
         var sessionUUID = generateUUID();
         setCookie(cookieName, sessionUUID, 1)
     }
+
+    setInterval(
+        function () {
+            // Update the
+        },
+    5000);
 }
 
 function setCookie(cname, cvalue, exdays) {
@@ -122,21 +131,23 @@ function auto_grow(element) {
 }
 
 function updateStartStopElement(element) {
-    text = element.innerText;
+    var text = element.innerText;
     if (text == 'START') {
+        testStatus = 1;
         element.innerText = 'STOP';
         element.className = "button is-danger is-active";
-        fireAPICall('updateVusers');
-        startTimer();
         document.getElementById('testStateId').style.visibility = "visible";
+        startTimer();
+        updateSession();
+        return;
     }
-    else {
-        element.innerText = 'START';
-        element.className = "button is-primary is-inverted";
-        fireAPICall('updateVusers');
-        stopTimer = 1;
-        document.getElementById('testStateId').style.visibility = "hidden";
-    }
+    testStatus = 0;
+    loadFromSession = 0;
+    element.innerText = 'START';
+    element.className = "button is-primary is-inverted";
+    document.getElementById('testStateId').style.visibility = "hidden";
+    document.getElementById("timerID").innerHTML = "0h 0m 0s";
+    clearSessionByID();
 }
 
 function updatePauseResumeElement(element) {
@@ -147,20 +158,21 @@ function updatePauseResumeElement(element) {
         fireAPICall('updateVusers');
         return;
     }
-    else {
-        element.innerText = 'PAUSE';
-        element.className = "button is-warning is-active";
-        fireAPICall('updateVusers');
-    }
+    element.innerText = 'PAUSE';
+    element.className = "button is-warning is-active";
+    fireAPICall('updateVusers');
 }
 
 function startTimer() {
 
+    console.log("Timer Here !!");
+
     // Set the date we're counting down to
-    startTimerDateObj = new Date().getTime();
+    if (loadFromSession == "0")
+        startTimerDateObj = new Date().getTime();
 
     // Update the count down every 1 second
-    var x = setInterval(function() {
+    setInterval(function() {
 
         // Get todays date and time
         var now = new Date().getTime();
@@ -173,8 +185,8 @@ function startTimer() {
         var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
         var seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-        if (stopTimer < 1) {
-            // Display the result in the element with id="demo"
+        if (testStatus >= 1) {
+            // Display the result in the element with id="timerID"
             document.getElementById("timerID").innerHTML = hours + "h "
                 + minutes + "m " + seconds + "s ";
         }
