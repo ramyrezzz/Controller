@@ -65,19 +65,21 @@ function setCookie(cname, cvalue, exdays) {
 }
 
 function getCookie(cname) {
+    var cookieAsString = "";
     var name = cname + "=";
     var decodedCookie = decodeURIComponent(document.cookie);
-    var ca = decodedCookie.split(';');
-    for(var i = 0; i <ca.length; i++) {
-        var c = ca[i];
-        while (c.charAt(0) == ' ') {
-            c = c.substring(1);
+    var cookieObject = decodedCookie.split(';');
+    for(var i = 0; i <cookieObject.length; i++) {
+        var cookieValue = cookieObject[i];
+        while (cookieValue.charAt(0) == ' ') {
+            cookieValue = cookieValue.substring(1);
         }
-        if (c.indexOf(name) == 0) {
-            return c.substring(name.length, c.length);
+        if (cookieValue.indexOf(name) == 0) {
+            cookieAsString = cookieValue.substring(name.length, cookieValue.length);
+            return cookieAsString;
         }
     }
-    return "";
+    return cookieAsString;
 }
 
 function buildBranchDeployDropdown(divname, list) {

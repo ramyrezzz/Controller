@@ -2,6 +2,7 @@ var rate = 0;
 var users = 1;
 var totalUsers = 1;
 var branch = "";
+var statusResponse;
 
 function fireAPICall(endPoint) {
 
@@ -223,17 +224,56 @@ function clearSessionByID() {
     });
 }
 
+function getStats() {
+
+    setInterval(function () {
+        format = 'jsonp';
+        hostName = 'http://163.172.129.226:5005/stats';
+        $.ajax({
+            url: hostName,
+            type: 'GET',
+            accept: 'application/json',
+            dataType: 'json',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            success: function(response) {
+                console.log("Request SUCCESS");
+
+                memObject = response.memv;
+                memFree = memObject.memFree;
+                memUsed = memObject.memUsed;
+                memoryTotal = memObject.memoryTotal;
+                cpuValue = response.cpu;
+
+                document.getElementById("tMemID").innerHTML = "  " + memoryTotal + " MB";
+                document.getElementById("fMemID").innerHTML = "  " + memFree + " MB";
+                document.getElementById("uMemID").innerHTML = "  " + memUsed + " MB";
+                document.getElementById("cpuUsageID").innerHTML = "  " + cpuValue + " %";
+            },
+            error: function() {
+                console.log("Request FAIL");
+            }
+        });
+    }, 5000);
+}
+
+
+
+
 function showDropDown(response) {
     listObj = JSON.parse(response).branchList;
     buildBranchDeployDropdown('select-Branch', listObj);
 }
 
 function showpROJECTSDropDown(response) {
+
     listObj = JSON.parse(response).projects;
     buildSelectProjectDropdown('select-Project', listObj)
 }
 
 function clearResponseFunction() {
+
     if ($('#responseTextField').attr('placeholder') == '') {
         $('#responseTextField').val('Label is empty already');
         return;
