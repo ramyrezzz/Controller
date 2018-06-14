@@ -105,6 +105,10 @@
                     <a class="button is-primary is-inverted"  title="Start the test" onclick="updateStartStopElement(this);" id="startButtonID">START</a>
                     <a class="button is-warning is-active" title="Pause the current Running scenario", onclick="updatePauseResumeElement(this)" id="pauseButtonId">PAUSE</a>
                     <a class="button is-primary is-loading is-rounded" id="testStateId" style="visibility: hidden; width:100px; border: solid 0px transparent;"></a>
+                    <a class="button is-primary is-loading is-rounded" style="visibility: hidden; width:100px; border: solid 0px transparent;"></a>
+                    <a class="button is-primary is-inverted"  title="Container UP" onclick="rampUpContianer('start');">Container UP</a>
+                    <input class="input is-rounded" type="text" placeholder="Container number" id="containerNoId" value="1" style="width:125px">
+                    <a class="button is-danger is-active"  title="Container STOP" onclick="rampUpContianer('stop');">Container STOP</a>
                 </p>
             </div>
             <!--<div class="container">-->

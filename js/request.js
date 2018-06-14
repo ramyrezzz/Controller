@@ -258,7 +258,47 @@ function getStats() {
     }, 5000);
 }
 
+function rampUpContianer(type) {
 
+    var endpoint = 'containerUp'
+    if (type == 'stop')
+        endpoint = 'containerDown'
+
+    var numberOfContainers = document.getElementById("containerNoId").value;
+    var prefixContName = 'jmeter-standalone0'
+
+    $('#responseTextField').val("");
+
+    console.log(numberOfContainers)
+    for (let i = 0; i <  numberOfContainers; i++) {
+
+        containerName = prefixContName + (i + 1);
+
+        hostName = 'http://163.172.129.226:5005/' + endpoint;
+        $.ajax({
+            url: hostName,
+            type: 'GET',
+            accept: 'application/json',
+            dataType: 'json',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            data: {
+                containerName
+            },
+            success: function(response) {
+                console.log("Request SUCCESS");
+                let rsp = JSON.stringify(response, undefined, 4);
+                $('#responseTextField').val(rsp);
+            },
+            error: function(response) {
+                console.log("Request FAIL");
+                $('#responseTextField').val(response);
+            }
+        });
+    }
+
+}
 
 
 function showDropDown(response) {
