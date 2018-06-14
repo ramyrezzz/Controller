@@ -135,6 +135,7 @@ function auto_grow(element) {
 function updateStartStopElement(element) {
     var text = element.innerText;
     if (text == 'START') {
+        document.getElementById("timerID").innerHTML = "0h 0m 0s";
         testStatus = 1;
         element.innerText = 'STOP';
         element.className = "button is-danger is-active";
@@ -148,7 +149,6 @@ function updateStartStopElement(element) {
     element.innerText = 'START';
     element.className = "button is-primary is-inverted";
     document.getElementById('testStateId').style.visibility = "hidden";
-    document.getElementById("timerID").innerHTML = "0h 0m 0s";
     clearSessionByID();
 }
 
