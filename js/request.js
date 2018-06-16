@@ -1,60 +1,10 @@
-var rate = 0;
-var users = 1;
-var totalUsers = 1;
-var branch = "";
-var statusResponse;
 
-function fireAPICall(endPoint) {
-
-    $('#responseTextField').val("");
-
-    format = 'jsonp';
-    hostName = 'http://163.172.129.226:5005/' + endPoint;
-    usersRateInput = document.getElementById("usersRateID").value;
-    totalUsers = document.getElementById("totalUsersID").value;
-
-    if (endPoint.includes('updateVusers'))
-        users = usersInput;
-    if (branch == '')
-        branch = 'accesa';
-
-    $.ajax({
-        url: hostName,
-        type: 'GET',
-        accept: 'application/json',
-        dataType: 'json',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        data: {
-            format,
-            usersRateInput,
-            testStatus,
-            totalUsers
-        },
-        success: function(response) {
-            console.log("Request success");
-            let rsp = JSON.stringify(response, undefined, 4);
-            $('#responseTextField').val(rsp);
-            if (endPoint == 'branches') {
-                showDropDown(rsp);
-                $('#responseTextField').click();
-            }
-
-            return rsp;
-        },
-        error: function(response) {
-            console.log("Request FAIL");
-            $('#responseTextField').val(response);
-        }
-    });
-}
 
 function getBranchList() {
 
     $('#responseTextField').val("");
 
-    format = 'jsonp';
+    format   = 'jsonp';
     hostName = 'http://163.172.129.226:5005/branches';
 
     $.ajax({
@@ -88,7 +38,7 @@ function getProjects() {
 
     $('#responseTextField').val("");
 
-    format = 'jsonp';
+    format   = 'jsonp';
     hostName = 'http://163.172.129.226:5005/projects';
 
     $.ajax({
@@ -117,11 +67,11 @@ function getProjects() {
     });
 }
 
-function deployBranch(branchName) {
+function deployBranch(branch) {
 
     $('#responseTextField').val("");
 
-    format = 'jsonp';
+    format   = 'jsonp';
     hostName = 'http://163.172.129.226:5005/deployContainer';
 
     $.ajax({
@@ -133,7 +83,7 @@ function deployBranch(branchName) {
             'Content-Type': 'application/x-www-form-urlencoded',
         },
         data: {
-            branchName
+            branch
         },
         success: function(response) {
             console.log("Request SUCCESS");
@@ -150,15 +100,13 @@ function deployBranch(branchName) {
 function updateSession() {
     $('#responseTextField').val("");
 
-    format = 'jsonp';
-    hostName = 'http://163.172.129.226:5005/updateSession';
+    format    = 'jsonp';
+    hostName  = 'http://163.172.129.226:5005/updateSession';
     sessionID = getCookie(cookieName);
-    _id = sessionID;
-    usersRateInput = document.getElementById("usersRateID").value;
-    totalUsers = document.getElementById("totalUsersID").value;
-    testNameID = document.getElementById("testNameID").value;
-    // projectID = document.getElementById("projectNameID").value;
-    projectID = 'hardcodedProjectJMX.jmx';
+    _id       = sessionID;
+
+    if (!checkControllerData())
+        return;
 
     $.ajax({
         url: hostName,
@@ -175,7 +123,7 @@ function updateSession() {
             totalUsers,
             testNameID,
             startTimerDateObj,
-            projectID,
+            // projectID,
             testStatus
         },
         success: function(response) {
@@ -192,14 +140,19 @@ function updateSession() {
 
 function clearAllSessions() {
     sessionID = "";
-    clearSessionByID();
+    clearSessionByID(sessionID);
     sessionID = getCookie(cookieName);
+    reload();
 }
 
-function clearSessionByID() {
+function clearSessionByID(sessionID) {
+    clearSessionByID(sessionID, null)
+}
+
+function clearSessionByID(sessionID, element) {
     $('#responseTextField').val("");
 
-    format = 'jsonp';
+    format   = 'jsonp';
     hostName = 'http://163.172.129.226:5005/clearSessionByID';
     $.ajax({
         url: hostName,
@@ -215,6 +168,8 @@ function clearSessionByID() {
         success: function(response) {
             console.log("Request SUCCESS");
             let rsp = JSON.stringify(response, undefined, 4);
+            if (element != null)
+                clearSessionByID(element);
             $('#responseTextField').val(rsp);
         },
         error: function(response) {
@@ -227,7 +182,7 @@ function clearSessionByID() {
 function getStats() {
 
     setInterval(function () {
-        format = 'jsonp';
+        format   = 'jsonp';
         hostName = 'http://163.172.129.226:5005/stats';
         $.ajax({
             url: hostName,
@@ -246,9 +201,9 @@ function getStats() {
                 memoryTotal = memObject.memoryTotal;
                 cpuValue = response.cpu;
 
-                document.getElementById("tMemID").innerHTML = "  " + memoryTotal + " MB";
-                document.getElementById("fMemID").innerHTML = "  " + memFree + " MB";
-                document.getElementById("uMemID").innerHTML = "  " + memUsed + " MB";
+                document.getElementById("tMemID").innerHTML = "  " + memoryTotal;
+                document.getElementById("fMemID").innerHTML = "  " + memFree;
+                document.getElementById("uMemID").innerHTML = "  " + memUsed;
                 document.getElementById("cpuUsageID").innerHTML = "  " + cpuValue + " %";
             },
             error: function() {
@@ -265,11 +220,13 @@ function rampUpContianer(type) {
         endpoint = 'containerDown'
 
     var numberOfContainers = document.getElementById("containerNoId").value;
-    var prefixContName = 'jmeter-standalone0'
+    var prefixContName     = 'other-test-0'
 
     $('#responseTextField').val("");
 
-    console.log(numberOfContainers)
+    if (isNaN(numberOfContainers) || numberOfContainers == '')
+        numberOfContainers = 1;
+
     for (let i = 0; i <  numberOfContainers; i++) {
 
         containerName = prefixContName + (i + 1);
@@ -284,7 +241,8 @@ function rampUpContianer(type) {
                 'Content-Type': 'application/x-www-form-urlencoded',
             },
             data: {
-                containerName
+                containerName,
+                sessionID
             },
             success: function(response) {
                 console.log("Request SUCCESS");
@@ -297,7 +255,93 @@ function rampUpContianer(type) {
             }
         });
     }
+}
 
+function getAllSessions() {
+    $('#responseTextField').val("");
+
+    format   = 'jsonp';
+    hostName = 'http://163.172.129.226:5005/getSessionList';
+    $.ajax({
+        url: hostName,
+        type: 'GET',
+        accept: 'application/json',
+        dataType: 'json',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        success: function(response) {
+            console.log("Request SUCCESS");
+            let rsp = JSON.stringify(response, undefined, 4);
+            $('#responseTextField').val(rsp);
+            buildSessionSelectDropdown('selectSessionNavBarID', response);
+        },
+        error: function(response) {
+            console.log("Request FAIL");
+            $('#responseTextField').val(response);
+        }
+    });
+}
+
+function getSessionByID(sessionID) {
+    $('#responseTextField').val("");
+
+    format   = 'jsonp';
+    hostName = 'http://163.172.129.226:5005/getSession';
+    $.ajax({
+        url: hostName,
+        type: 'GET',
+        accept: 'application/json',
+        dataType: 'json',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        data: {
+            sessionID
+        },
+        success: function(response) {
+            console.log("Request SUCCESS");
+            let rsp = JSON.stringify(response, undefined, 4);
+            $('#responseTextField').val(rsp);
+            applySessionDetails(response);
+        },
+        error: function(response) {
+            console.log("Request FAIL");
+            $('#responseTextField').val(response);
+        }
+    });
+}
+
+function startTestAPIRequest() {
+    $('#responseTextField').val("");
+
+    var activeThreads = 200;
+    var sessionID = getCookie(cookieName);
+
+    format   = 'jsonp';
+    hostName = 'http://163.172.129.226:5005/evaluateRampup';
+    $.ajax({
+        url: hostName,
+        type: 'GET',
+        accept: 'application/json',
+        dataType: 'json',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        data: {
+            activeThreads,
+            sessionID
+        },
+        success: function(response) {
+            console.log("Request SUCCESS");
+            let rsp = JSON.stringify(response, undefined, 4);
+            $('#responseTextField').val(rsp);
+        },
+        error: function(response) {
+            console.log("Request FAIL");
+            $('#responseTextField').val(response);
+        }
+    });
 }
 
 

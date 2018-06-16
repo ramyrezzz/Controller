@@ -2,12 +2,11 @@
 toggle between hiding and showing the dropdown content */
 
 var startTimerDateObj;
-var selectedProjectPath;
 
+var totalUsers;
 var testStatus = 0;
 var loadFromSession = 0;
 var cookieName = "ControllerSessionID";
-
 
 $(document).mouseup(function(e) {
     var container = $(".dropdown-menu");
@@ -39,7 +38,6 @@ function s4() {
 }
 
 function cookieHandler() {
-    startTimerDateObj = "0";
 
     var cookieValue = getCookie(cookieName);
     console.log("Cookie is: " + cookieName + "-> " + cookieValue);
@@ -50,17 +48,19 @@ function cookieHandler() {
 
     setInterval(
         function () {
-            // Update the
+
+            if (!checkControllerData())
+                return;
+
+            // updateSession();
         },
     5000);
 }
 
 function setCookie(cname, cvalue, exdays) {
-    console.log(cname + " " + cvalue);
     var date = new Date();
     date.setTime(date.getTime() + (exdays * 24 * 60 * 60 * 1000));
     var expires = "expires=" + date.toUTCString();
-    console.log(expires, true);
     document.cookie = cname + "=" + cvalue + "; " + expires + ";path=/";
 }
 
@@ -85,10 +85,11 @@ function getCookie(cname) {
 function buildBranchDeployDropdown(divname, list) {
 
     elementCount = document.getElementById(divname).childElementCount;
-    if (elementCount > 1) {
+    if (elementCount >= 1) {
         $('#dropdown-menu2').show();
         return;
     }
+
     var newDiv = document.createElement('div');
     var html = '', i;
     $('#dropdown-menu2').show();
@@ -96,10 +97,36 @@ function buildBranchDeployDropdown(divname, list) {
         return;
 
     for(i = 0; i < list.length; i++)
-        html += '<a href=\"#\" class=\"dropdown-item\" onclick=\"deployBranch(\'' +  list[i] + "\')\" id=\"" +  list[i] + '\"' + "<p> Deploy '<strong>" + list[i] + "</strong>" + '\' ' +  'branch' + '</p></a>' ;
+        html += '<a href=\"#\" class=\"dropdown-item\" onclick=\"deployBranch(\'' +  list[i].substring(7, list[i].length) + "\')\" id=\"" +  list[i] + '\"' + "<p> Deploy '<strong>" + list[i] + "</strong>" + '\' ' +  'branch' + '</p></a>' ;
 
     html += '</select>';
-    newDiv.innerHTML= html;
+    newDiv.innerHTML = html;
+
+    document.getElementById(divname).appendChild(newDiv);
+}
+
+function buildSessionSelectDropdown(divname, list) {
+
+    elementCount = document.getElementById(divname).childElementCount;
+    if (elementCount >= 1) {
+        $('#selectSessionNavBarID').show();
+        return;
+    }
+
+    // $('#selectSessionNavBarID').show();
+    if ($(divname).children().length > 0)
+        return;
+
+
+    var newDiv = document.createElement('div');
+    var html = '', i;
+    for(i = 0; i < list.length; i++) {
+        html += '<a class=\"navbar-item is-active\" onclick=\"getSessionByID(\'' + list[i].sessionID + "\')\"><strong>Select session :</strong>" + list[i].testNameID + '</a>' + '<button class="delete" style="float: right" onclick="clearSessionByID(list[i].sessionID)"></button>'
+        // html += '<a href=\"#\" class=\"dropdown-item\" onclick=\"deployBranch(\'' +  list[i].substring(7, list[i].length) + "\')\" id=\"" +  list[i] + '\"' + "<p> Deploy '<strong>" + list[i] + "</strong>" + '\' ' +  'branch' + '</p></a>' ;
+    }
+
+    html += '</div>';
+    newDiv.innerHTML = html;
 
     document.getElementById(divname).appendChild(newDiv);
 }
@@ -107,10 +134,11 @@ function buildBranchDeployDropdown(divname, list) {
 function buildSelectProjectDropdown(divname, list) {
 
     elementCount = document.getElementById(divname).childElementCount;
-    if (elementCount > 1) {
+    if (elementCount >= 1) {
         $('#dropdown-menu3').show();
         return;
     }
+
     var newDiv = document.createElement('div');
     var html = '', i;
     $('#dropdown-menu3').show();
@@ -132,24 +160,52 @@ function auto_grow(element) {
     element.style.height = (element.scrollHeight) + "px";
 }
 
+function disableEnableInput(state) {
+    if (document.getElementById("testNameID").disabled == state)
+        return;
+    document.getElementById("testNameID").disabled = state;
+    document.getElementById("totalUsersID").disabled = state;
+    document.getElementById("usersRateID").disabled = state;
+}
+
+function showHideDropdown(state) {
+    if (document.getElementById('navBarMenuID').style.visibility == state)
+        return;
+    document.getElementById('navBarMenuID').style.visibility = state;
+    document.getElementById('navBarParentID').style.visibility = state;
+    document.getElementById('selectSessionNavLink').style.visibility = state;
+    document.getElementById('selectSessionNavBarID').style.visibility = state;
+}
+
 function updateStartStopElement(element) {
+
+    if (!checkControllerData())
+        return;
+
     var text = element.innerText;
     if (text == 'START') {
         document.getElementById("timerID").innerHTML = "0h 0m 0s";
         testStatus = 1;
         element.innerText = 'STOP';
         element.className = "button is-danger is-active";
-        document.getElementById('testStateId').style.visibility = "visible";
+        document.getElementById('testRunningSpinnerID').style.visibility = "visible";
+        document.getElementById('editTestConfigID').disabled = false;
+        disableEnableInput(true);
         startTimer();
         updateSession();
+        startTestAPIRequest();
         return;
     }
-    testStatus = 0;
-    loadFromSession = 0;
-    element.innerText = 'START';
-    element.className = "button is-primary is-inverted";
-    document.getElementById('testStateId').style.visibility = "hidden";
-    clearSessionByID();
+    if (text == 'STOP'){
+        testStatus = 0;
+        loadFromSession = 0;
+        element.innerText = 'START';
+        element.className = "button is-primary is-inverted";
+        document.getElementById('testRunningSpinnerID').style.visibility = "hidden";
+        showHideDropdown('visible');
+        disableEnableInput(false);
+        document.getElementById('editTestConfigID').disabled = true;
+    }
 }
 
 function updatePauseResumeElement(element) {
@@ -157,35 +213,43 @@ function updatePauseResumeElement(element) {
     if (text == 'PAUSE') {
         element.innerText = 'RESUME';
         element.className = "button is-success is-hovered";
-        fireAPICall('updateVusers');
+        testStatus = 2;
+        updateSession();
         return;
     }
     element.innerText = 'PAUSE';
     element.className = "button is-warning is-active";
-    fireAPICall('updateVusers');
+    testStatus = 1;
+    updateSession();
 }
 
 function startTimer() {
 
-    console.log("Timer Here !!");
-
     // Set the date we're counting down to
-    if (loadFromSession == "0")
-        startTimerDateObj = new Date().getTime();
+    var startTimerDate = startTimerDateObj;
+    if (loadFromSession == 0) {
+        startTimerDate = new Date().getTime();
+        startTimerDateObj = startTimerDate;
+    }
 
     // Update the count down every 1 second
-    setInterval(function() {
+    var timerLoop = setInterval(function() {
+
+        if (testStatus == 0)
+            clearInterval(timerLoop);
 
         // Get todays date and time
         var now = new Date().getTime();
 
         // Find the distance between now an the count down date
-        var distance = now - startTimerDateObj;
+        var distance = now - startTimerDate;
+        console.log(distance)
 
         // Time calculations for days, hours, minutes and seconds
         var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
         var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
         var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+        document.getElementById('buttonisDockerView').focus();
 
         if (testStatus >= 1) {
             // Display the result in the element with id="timerID"
@@ -197,4 +261,73 @@ function startTimer() {
 
 function close_window() {
     window.close();
+}
+
+function checkControllerData() {
+
+    usersRateInput = document.getElementById("usersRateID").value;
+    totalUsers = document.getElementById("totalUsersID").value;
+    testNameID = document.getElementById("testNameID").value;
+
+    if (totalUsers == '')
+        return false;
+    if (usersRateInput == '')
+        return false;
+    if (testNameID == '')
+        return false;
+    // if (projectID == '')
+    //     return false;
+    return true
+}
+
+function showTab(evt, tabName) {
+    // Declare all variables
+    var i, tabcontent, tablinks;
+
+    // Get all elements with class="tabcontent" and hide them
+    tabcontent = document.getElementsByClassName("tabcontent");
+    for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+    }
+
+    // Get all elements with class="tablinks" and remove the class "active"
+    tablinks = document.getElementsByClassName("tablinks");
+    for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+
+    // Show the current tab, and add an "active" class to the button that opened the tab
+    document.getElementById(tabName).style.display = "block";
+
+    if (tabName == 'mainControllerID') {
+        document.getElementById('testScenarioID').style.visibility = "visible";
+        return;
+    }
+    document.getElementById('testScenarioID').style.visibility = "hidden";
+    if (testStatus == 0) {
+        document.getElementById('editTestConfigID').disabled = true;
+    }
+}
+
+function applySessionDetails(sessionDetails) {
+
+    loadFromSession = 1;
+
+    document.getElementById("usersRateID").value = sessionDetails.usersRateInput;
+    document.getElementById("totalUsersID").value = sessionDetails.totalUsers;
+    document.getElementById("testNameID").value = sessionDetails.testNameID;
+    startTimerDateObj = sessionDetails.startTimerDateObj;
+    testStatus = sessionDetails.testStatus;
+    projectID = sessionDetails.projectID;
+
+
+    updateStartStopElement(document.getElementById('startButtonID'));
+    showHideDropdown('hidden');
+    disableEnableInput(true);
+}
+
+function useSelectProject (projectPath) {
+    projectID = projectPath;
+    $('#dropdown-menu3').hide();
+
 }

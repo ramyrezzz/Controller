@@ -18,157 +18,317 @@
         <style>
             .hero .container {
                 width: 95%;
+                bottom:0;
             }
         </style>
     </head>
 
-    <body class="theme-page">
+    <body class="theme-page" style="background-color:#2cb9d9; min-height: 1080px">
     <section class="hero is-primary">
-        <!-- Hero header: will stick at the top -->
-        <div class="hero-head">
-            <img src="img/accesa_logo_bg.png" style="height: 68px; width: auto;float:right;">
-            <nav class="main-nav navbar ">
-                <div class="">
-                    <div class="column">
-                        <div class="navbar-start">
-                            <a class="navbar-item" href="#" onclick="reload()">
-                                <!--<img src="img/refresh.png" alt="" class="logo">-->
-                                <h1 class="title is-5">Controller</h1>
-                            </a>
-                            <!--<a class="navbar-item" href="#" onclick="fireAPICall('updateVusers', '')" id="deployID">-->
-                                <!--<div style="color:#fff" class="ld ld-ring ld-spin"></div>-->
-                                <!--<img src="img/refresh.png" alt=" " class="logo" align="center">-->
-                                <!--<h2 class="title is-5"> Resume  </h2>-->
-                            <!--</a>-->
-                            <input class="input is-rounded" type="text" placeholder="Users Rate" id="usersRateID" value="" style="width:125px">
-                            <input class="input is-rounded" type="text" placeholder="Total Users" id="totalUsersID" style="width:125px">
-                            <input class="input is-rounded" type="text" placeholder="Test Name" id="testNameID" style="width:250px">
-                            <a class="navbar-item " target="_blank" href="/help.html" style="float: right">Help</a>
-
-                        </div>
-                        <span class="navbar-toggle">
-                        </span>
-                        <div class="navbar-end navbar-menu">
+            <div class="hero-head">
+                <img src="img/accesa_logo_bg.png" style="height: 68px; width: auto;float:right;">
+                <nav class="main-nav navbar ">
+                    <div class="">
+                        <div class="column">
+                            <div class="navbar-start">
+                                <a class="navbar-item" href="#" onclick="reload()">
+                                    <h1 class="title is-5">Controller</h1>
+                                </a>
+                                <input class="input is-rounded" type="text" placeholder="Users Rate" id="usersRateID" value="" style="width:125px">
+                                <input class="input is-rounded" type="text" placeholder="Total Users" id="totalUsersID" style="width:125px">
+                                <input class="input is-rounded" type="text" placeholder="Test Name" id="testNameID" style="width:250px">
+                            </div>
+                            <span class="navbar-toggle">
+                            </span>
                         </div>
                     </div>
+                        <div class="navbar-menu" id="navBarMenuID" style="visibility: visible; ">
+                            <div class="navbar-start">
+                                <a class="navbar-item " id="navBarItem">
+                                </a>
+                                <div class="navbar-item has-dropdown is-hoverable" id="navBarParentID" disabled="true">
+                                    <a class="navbar-link  is-active" onclick="getAllSessions()" id="selectSessionNavLink">Sessions</a>
+                                    <div class="navbar-dropdown" id="selectSessionNavBarID" style="background-color:transparent"></div>
+                                </div>
+                            </div>
+                        </div>
+                    <table class="table is-bordered" style="height: 68px; width: auto;float:right; alignment: right; background-color: Transparent; margin-bottom: 0px; padding: 0.5em; line-height: 0.75;">
+                        <thead>
+                        <script>getStats()</script>
+                        <tr>
+                            <th> Total Memory </th>
+                            <th> Free Memory </th>
+                            <th> Used Memory </th>
+                            <th> CPU usage </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td id="tMemID">  </td>
+                            <td id="fMemID">  </td>
+                            <td id="uMemID">  </td>
+                            <td id="cpuUsageID">  </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <a class="button is-large" id="buttonisDockerView" style="background: #00a3e1"></a>
+                    <div class="column" id="TitleBar">
+                        <a>
+                            <p class="loader" id="testRunningSpinnerID" style="visibility: hidden; float: right;">_.-</p>
+                            <p class="subtitle is-5 has-text-weight-semibold " id="timerID" style="float: right; width: 125px"> 0h 0m 0s </p>
+                        </a>
+                    </div>
+                </nav>
+                <div class="tabs is-small">
+                    <hr>
+                    <ul>
+                        <li>
+                            <a href="javascript:void(0)" onclick="showTab(event, 'mainControllerID')">Main Controller</a>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0)" onclick="showTab(event, 'settingsControllerID')">Settings</a>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0)" onclick="showTab(event, 'containerControllerID')">Containers</a>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0)" onclick="showTab(event, 'debugControllerID')">Debug</a>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0)" onclick="showTab(event, 'helpControllerID')">Help</a>
+                        </li>
+                    </ul>
                 </div>
-                <a class="navbar-item" href="#" onclick="updateSession()" style="height: 68px; width: auto;float:right;">
-                    <h1 class="title is-5">Update Session</h1>
-                </a>
-                <a class="navbar-item" href="#" onclick="clearAllSessions()" style="height: 68px; width: auto;float:right;">
-                    <h1 class="title is-5">Clear All Sessions</h1>
-                </a>
-                <table class="table is-bordered" style="height: 68px; width: auto;float:right; alignment: right; background-color: Transparent; margin-bottom: 0px; padding: 0.5em; line-height: 0.75;">
-                    <thead>
-                    <script>getStats()</script>
-                    <tr>
-                        <th> Total Memory </th>
-                        <th> Free Memory </th>
-                        <th> Used Memory </th>
-                        <th> CPU usage </th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td id="tMemID">  </td>
-                        <td id="fMemID">  </td>
-                        <td id="uMemID">  </td>
-                        <td id="cpuUsageID">  </td>
-                    </tr>
-                    </tbody>
-                </table>
-            </nav>
-            <div class="column" id="TitleBar">
-                <a>
-                    <p class="subtitle is-5 has-text-weight-semibold " id="timerID" style="float: right; width: 125px"> 0h 0m 0s </p>
-                </a>
-            </div>
-        </div>
-        <!-- Hero content: will be in the middle -->
-        <div class="hero-body">
-            <div class="container">
-                <h1 class="title">
-                    Test Scenario
-                </h1>
-                <p>
-                <div class="dropdown">
-                    <div class="dropdown-trigger">
-                        <button class="button is-info" aria-haspopup="true" aria-controls="dropdown-menu3" onclick="getProjects()")>
-                            <span>Projects</span>
+                <div id="mainControllerID" class="tabcontent">
+                </div>
+                <div id="containerControllerID" class="tabcontent">
+                    <a class="button is-primary is-inverted"  title="Container UP" onclick="rampUpContianer('start');">Container UP</a>
+                    <input class="input is-rounded" type="text" placeholder="Container number" id="containerNoId" value="1" style="width:125px">
+                    <a class="button is-danger is-active"  title="Container STOP" onclick="rampUpContianer('stop');">Container STOP</a>            </div>
+                <div id="debugControllerID" class="tabcontent">
+                    <div class="container">
+                        <h5 class="title">  </h5>
+                        <pre>
+                        <textarea class="textarea" placeholder="Response will be printed here" aria-autocomplete="list" id="responseTextField" onclick="auto_grow(this)"></textarea>
+                        <button class="button" aria-haspopup="true" aria-controls="dropdown-menu" onclick="clearResponseFunction()">
+                            <span>Clear response</span>
                         </button>
-                        <div class="dropdown-menu" id="dropdown-menu3" role="menu">
-                            <div class="dropdown-content" id="select-Project">
+                    </pre>
+                    </div>            </div>
+                <div id="settingsControllerID" class="tabcontent">
+                    <input class="input is-rounded" type="text" placeholder="Insert GIT repo " id="importGitRepoID" style="width:500px">
+
+                    <div class="column">
+
+                        <button class="button" id="applyGitRepoID" onclick="">
+                            <span>Apply Repo</span>
+                        </button>
+                        <div class="dropdown">
+                            <div class="dropdown-trigger">
+                                <button class="button is-info" aria-haspopup="true" aria-controls="dropdown-menu2" onclick="getBranchList()")>
+                                    <span>Branches</span>
+                                </button>
+                            </div>
+                            <div class="dropdown-menu" id="dropdown-menu2" role="menu">
+                                <div class="dropdown-content" id="select-Branch">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="dropdown">
+                            <div class="dropdown-trigger">
+                                <!--<a class="navbar-item" href="#" onclick="disableEnableInput(false)" style="height: 68px; width: auto;float:left;">-->
+                                    <!--<h5 class="title is-5">Edit test config</h5>-->
+                                <!--</a>-->
+                                <button class="button" id="editTestConfigID" onclick="disableEnableInput(false)">
+                                    <span>Edit test config</span>
+                                </button>
+                            </div>
+                            <div class="dropdown-menu" id="dropdown-menu" role="menu">
+                            </div>
+
+                        </div>
+                    </div>
+                    <a class="navbar-item" href="#" onclick="updateSession()" style="height: 68px; width: auto;float:left;">
+                        <h5 class="title is-5">Update Session</h5>
+                    </a>
+                    <a class="navbar-item" href="#" onclick="clearAllSessions()" style="height: 68px; width: auto;float:left;">
+                        <h5 class="title is-5">Clear All Sessions</h5>
+                    </a>
+                </div>
+                <div id="helpControllerID" class="tabcontent">
+                    <div class="title">REST API documentation</div>
+                    <hr>
+                    <div class="message-header" style="background: #0e506f">
+                        <h3>/projects</h3>
+                        <h4>Type: GET</h4>
+                    </div>
+                    <div class="message-body">
+                        <strong>Description: </strong>This API is responsible for fetching the available projects from the Projects configured repository.<br/>
+                        <em>Example: {"projects": ["/root/testPage/Projects/project1.jmx","/root/testPage/Projects/sample-test3.jmx"],"stat": "ok"}</em>
+                    </div>
+                    <div class="message-header" style="background: #0e506f">
+                        <h3>/health</h3>
+                        <h4>Type: GET</h4>
+                    </div>
+                    <div class="message-body">
+                        <strong>Description: </strong>This API is responsible for verifying the HEALTH of the webServer.<br/>
+                        <em>Example: {"stat": "ok"}</em>
+                    </div>
+                    <div class="message-header" style="background: #0e506f">
+                        <h3>/stats</h3>
+                        <h4>Type: GET</h4>
+                    </div>
+                    <div class="message-body">
+                        <strong>Description: </strong>This API is responsible for fetching the CPU, memory and running processes on the HOST.<br/>
+                        <em>Example: {"cpu": 13.3,"memv": {"memFree": 204,"memUsed": 316,"memoryTotal": 1996},"processes": [{"name": "systemd","pid": 1},{"name": "sshd","pid": 32226}],"stat": "ok"}</em>
+                    </div>
+                    <div class="message-header" style="background: #0e506f">
+                        <h3>/deployContainer</h3>
+                        <h4>Type: GET</h4>
+                    </div>
+                    <div class="message-body">
+                        <strong>Description: </strong>This API is responsible for fetching the CPU, memory and running processes on the HOST.<br/>
+                        <strong>SupportedParams: branchName=develop</strong><br />
+                        <em>Example: {"cpu": 13.3,"memv": {"memFree": 204,"memUsed": 316,"memoryTotal": 1996},"processes": [{"name": "systemd","pid": 1},{"name": "sshd","pid": 32226}],"stat": "ok"}</em>.
+                    </div>
+                    <div class="message-header" style="background: #0e506f">
+                        <h3>/branches</h3>
+                        <h4>Type: GET</h4>
+                    </div>
+                    <div class="message-body">
+                        <strong>Description: </strong>This API is responsible for fetching list of available branches on the configured repository<br/>
+                        <em>Example: {"branchList": ["origin/master","origin/accesa","origin/develop"],"stat": "ok"}</em>.
+                    </div>
+                    <div class="message-header" style="background: #0e506f">
+                        <h3>/getVusers</h3>
+                        <h4>Type: GET</h4>
+                    </div>
+                    <div class="message-body">
+                        <strong>Description: </strong>This API is responsible for fetching max number of vUsers expected for the current Test.<br/>
+                        <em>Example: {"reason": "users or rate file is not initialized.","stat": "failed"}</em>.<br/>
+                        <strong>TO BE DELETED</strong>
+                    </div>
+                    <div class="message-header" style="background: #0e506f">
+                        <h3>/updateVusers</h3>
+                        <h4>Type: GET</h4>
+                    </div>
+                    <div class="message-body">
+                        <strong>Description: </strong>This API is responsible for updating the maximum users for the current test.<br/>
+                        <em>Example: {"rampup": "0","rate": "1","stat": "ok","totalUsers": "1"}</em>.<br/>
+                        <strong>TO BE DELETED</strong>
+                    </div>
+                    <div class="message-header" style="background: #0e506f">
+                        <h3>/updateSession</h3>
+                        <h4>Type: POST</h4>
+                    </div>
+                    <div class="message-body">
+                        <strong>Description: </strong>This API is responsible for Setting the current controller session - needs to be provided all the current information that is displayed on the page.<br/>
+                        <strong>Content-Type: application/x-www-form-urlencoded</strong><br/>
+
+                        <em>sessionID: bc066098-5d5f-2ba8-fdb5-623cd0a86532
+                            _id: bc066098-5d5f-2ba8-fdb5-623cd0a86532
+                            usersRateInput: 10
+                            totalUsers: 15000
+                            testNameID: baseline+and+checkout
+                            startTimerDateObj: 1529132880966
+                            projectID: hardCodedProject.jmx
+                            testStatus: 1</em>.<br/>
+                    </div>
+                    <div class="message-header" style="background: #0e506f">
+                        <h3>/getSession</h3>
+                        <h4>Type: GET</h4>
+                    </div>
+                    <div class="message-body">
+                        <strong>Description: </strong>This API is responsible for fetching the session information about current running test.<br/>
+                        <em>Example: [{"_id": "bc066098-5d5f-2ba8-fdb5-623cd0a86532","projectID": "hardCodedProject.jmx","sessionID": "bc066098-5d5f-2ba8-fdb5-623cd0a86532","startTimerDateObj": "1529132880966","testNameID": "baseline and checkout","testStatus": "1","totalUsers": 15000","usersRateInput": "10"}]</em>.<br/>
+                    </div>
+                    <div class="message-header" style="background: #0e506f">
+                        <h3>/containerUp</h3>
+                        <h4>Type: GET</h4>
+                    </div>
+                    <div class="message-body">
+                        <strong>Description: </strong>This API is responsible for Ramp-up an additional docker container.<br/>
+                        <strong>Supporting Params: containerName=containerName/Description</strong><br/>
+                        <em>Example: {  "stat": "ok",   "statusCode": 0}</em>.<br/>
+                        Future development: Will support container type
+                    </div>
+                    <div class="message-header" style="background: #0e506f">
+                        <h3>/containerDown</h3>
+                        <h4>Type: GET</h4>
+                    </div>
+                    <div class="message-body">
+                        <strong>Description: </strong>This API is responsible for killing a docker container by name.<br/>
+                        <strong>Supporting Params: containerName=containerName/Description</strong><br/>
+                        <em>Example: {  "stat": "ok",   "statusCode": 0}</em>.<br/>
+                    </div>
+                    <div class="message-header" style="background: #0e506f">
+                        <h3>/forceContainersDown</h3>
+                        <h4>Type: GET</h4>
+                    </div>
+                    <div class="message-body">
+                        <strong>Description: </strong>This API is responsible for killing all running docker containers.<br/>
+                        <em>Example: {  "stat": "ok",   "statusCode": 0}</em>.<br/>
+                    </div>
+                    <div class="message-header" style="background: #0e506f">
+                        <h3>/clearSessions</h3>
+                        <h4>Type: GET</h4>
+                    </div>
+                    <div class="message-body">
+                        <strong>Description: </strong>This API is responsible for clearing all stored sessions.<br/>
+                        <em>Example: {"result": {"n": 2,"ok": 1},"stat": "ok"}</em>.<br/>
+                        <em>"n":2 - stands for how many sessions were deleted.</em>
+                    </div>
+                    <div class="message-header" style="background: #0e506f">
+                        <h3>/clearSessionByID</h3>
+                        <h4>Type: GET</h4>
+                    </div>
+                    <div class="message-body">
+                        <strong>Description: </strong>This API is responsible for clearing a single stored session by its ID.<br/>
+                        <strong>Supporting Params: sessionID=bc066098-5d5f-2ba8-fdb5-623cd0a86532</strong><br/>
+                        <em>Example: {"result": {"n": 1,"ok": 1},"stat": "ok"}</em>.<br/>
+                        <em>"n":1 - 1 is mandatory - impossible to clear more than one single ID at a time.</em>
+                    </div>
+                    <div class="message-header" style="background: #0e506f">
+                        <h3>/evaluateRampup</h3>
+                        <h4>Type: GET</h4>
+                    </div>
+                    <div class="message-body">
+                        <strong>Description: </strong>This API is responsible for handling the rampup of the running Jmeter session.<br/>
+                        <strong>Supporting Params: activeThreads=100</strong><br/>
+                        <em>Example: {"errorCode": "0","message": "All good, no rampup needed","operationResult": "N/A","sessionID": "null","stat": "ok"}</em>.<br/>
+                        <em><strong>Details:</strong><br/>If current activeThreads reach 200 then a new container will be deployed.</em><br/>
+                        <em>Response: {"errorCode": 200,"message": "Rampup Container ok... ramping up 200 users","operationResult": "{'insertResult': <pymongo.results.UpdateResult object at x7f327638a440>, 'testStatus': 'n/a', 'sessionID': u'81942362-0479-e29f-33ca-c77b7a06a2bf', 'sessionSync': <pymongo.results.UpdateResult object at 0x7f327638ad40>}","sessionID": "81942362-0479-e29f-33ca-c77b7a06a2bf","stat": "ok"}</em>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-body">
+
+                <div class="container" id="testScenarioID" style="visibility: visible">
+                    <h5 class="title">
+                        Test Scenario
+                    </h5>
+                    <p>
+                    <div class="dropdown">
+                        <div class="dropdown-trigger">
+                            <button class="button is-info" aria-haspopup="true" aria-controls="dropdown-menu3" onclick="getProjects()")>
+                                <span>Projects</span>
+                            </button>
+                            <div class="dropdown-menu" id="dropdown-menu3" role="menu">
+                                <div class="dropdown-content" id="select-Project">
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                    <a class="button is-primary is-inverted"  title="Start the test" onclick="updateStartStopElement(this);" id="startButtonID">START</a>
-                    <a class="button is-warning is-active" title="Pause the current Running scenario", onclick="updatePauseResumeElement(this)" id="pauseButtonId">PAUSE</a>
-                    <a class="button is-primary is-loading is-rounded" id="testStateId" style="visibility: hidden; width:100px; border: solid 0px transparent;"></a>
-                    <a class="button is-primary is-loading is-rounded" style="visibility: hidden; width:100px; border: solid 0px transparent;"></a>
-                    <a class="button is-primary is-inverted"  title="Container UP" onclick="rampUpContianer('start');">Container UP</a>
-                    <input class="input is-rounded" type="text" placeholder="Container number" id="containerNoId" value="1" style="width:125px">
-                    <a class="button is-danger is-active"  title="Container STOP" onclick="rampUpContianer('stop');">Container STOP</a>
-                </p>
-            </div>
-            <!--<div class="container">-->
-                <!--<h5 class="label">  </h5>-->
-                <!--<p>-->
-                    <!--<input class="input is-rounded" type="text" placeholder="Total Users" id="totalUsers" style="width:110px">-->
-                    <!--<input class="input is-rounded" type="text" placeholder="Users / s" id="usersPerSecondID" style="width:110px">-->
-                <!--</p>-->
-            <!--</div>-->
-            <div class="container">
-                <h5 class="title">  </h5>
-                <pre>
-                    <textarea class="textarea" placeholder="Response will be printed here" aria-autocomplete="list" id="responseTextField" onclick="auto_grow(this)"></textarea>
-                </pre>
-            </div>
-        </div>
-        </div>
-        <div class="column">
-            <div class="dropdown">
-                <div class="dropdown-trigger">
-                    <button class="button is-info" aria-haspopup="true" aria-controls="dropdown-menu2" onclick="getBranchList()")>
-                        <span>Branches</span>
-                    </button>
-                </div>
-                <div class="dropdown-menu" id="dropdown-menu2" role="menu">
-                    <div class="dropdown-content" id="select-Branch">
-                    </div>
-                </div>
-            </div>
-            <div class="dropdown">
-                <div class="dropdown-trigger">
-                    <button class="button" aria-haspopup="true" aria-controls="dropdown-menu" onclick="clearResponseFunction()">
-                        <span>Clear response</span>
-                    </button>
-                </div>
-                <div class="dropdown-menu" id="dropdown-menu" role="menu">
-                    <div class="dropdown-content is-hidden" id="dropdown-content">
-                        <a href="#" class="dropdown-item">
-                            Dropdown item
-                        </a>
-                        <a class="dropdown-item">
-                            Other dropdown item
-                        </a>
-                        <a href="#" class="dropdown-item">
-                            Active dropdown item
-                        </a>
-                        <a href="#" class="dropdown-item">
-                            Other dropdown item
-                        </a>
-                        <hr class="dropdown-divider">
-                        <a href="#" class="dropdown-item">
-                            With a divider
-                        </a>
-                    </div>
+                        <a class="button is-primary is-inverted"  title="Start the test" onclick="updateStartStopElement(this);" id="startButtonID">START</a>
+                        <a class="button is-warning is-active" title="Pause the current Running scenario", onclick="updatePauseResumeElement(this)" id="pauseButtonId">PAUSE</a>
+                    </p>
                 </div>
             </div>
         </div>
     </section>
     <script>
         cookieHandler();
+        showTab(event, 'mainControllerID');
     </script>
     </body>
 </html>
