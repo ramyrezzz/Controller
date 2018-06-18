@@ -194,7 +194,7 @@ function updateStartStopElement(element) {
         startTimer();
         updateSession();
         startTestAPIRequest();
-        updatePauseResumeElement(document.getElementById('startButtonID'));
+        updatePauseResumeElement(document.getElementById('pauseButtonId'));
         return;
     }
     if (text == 'STOP'){
