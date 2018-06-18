@@ -142,14 +142,12 @@ function clearAllSessions() {
     sessionID = "";
     clearSessionByID(sessionID);
     sessionID = getCookie(cookieName);
-    reload();
+    if(sessionID)
+        reload();
 }
 
 function clearSessionByID(sessionID) {
-    clearSessionByID(sessionID, null)
-}
 
-function clearSessionByID(sessionID, element) {
     $('#responseTextField').val("");
 
     format   = 'jsonp';
@@ -168,8 +166,6 @@ function clearSessionByID(sessionID, element) {
         success: function(response) {
             console.log("Request SUCCESS");
             let rsp = JSON.stringify(response, undefined, 4);
-            if (element != null)
-                clearSessionByID(element);
             $('#responseTextField').val(rsp);
         },
         error: function(response) {
@@ -178,6 +174,34 @@ function clearSessionByID(sessionID, element) {
         }
     });
 }
+
+
+function forceStopAllContainers() {
+    $('#responseTextField').val("");
+
+    format   = 'jsonp';
+    hostName = 'http://163.172.129.226:5005/forceContainersDown';
+    $.ajax({
+        url: hostName,
+        type: 'GET',
+        accept: 'application/json',
+        dataType: 'json',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+
+        success: function(response) {
+            console.log("Request SUCCESS");
+            let rsp = JSON.stringify(response, undefined, 4);
+            $('#responseTextField').val(rsp);
+        },
+        error: function(response) {
+            console.log("Request FAIL");
+            $('#responseTextField').val(response);
+        }
+    });
+}
+
 
 function getStats() {
 

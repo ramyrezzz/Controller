@@ -20,6 +20,19 @@
                 width: 95%;
                 bottom:0;
             }
+            dca {
+                width: 35px;
+                height: 68px;
+                background-color: red;
+                animation-name: dockerContainerAnim;
+                animation-duration: 2s;
+                animation-iteration-count: infinite;
+                border: solid #0e506f 1.5px;
+            }
+            @keyframes dockerContainerAnim {
+                from {background-color: #2cb9d9;}
+                to {background-color: #3d8b40;}
+            }
         </style>
     </head>
 
@@ -71,7 +84,19 @@
                         </tr>
                         </tbody>
                     </table>
-                    <a class="button is-large" id="buttonisDockerView" style="background: #00a3e1"></a>
+                    <!--<a class="button is-large" id="buttonisDockerView" style="background: #00a3e1"></a>-->
+                    <dca class="example" id="buttonisDockerView">WS</dca>
+                    <dca class="example" id="buttonisDockerView">InX</dca>
+                    <dca class="example" id="buttonisDockerView">GrF</dca>
+                    <dca class="example" id="buttonisDockerView">01</dca>
+                    <dca class="example" id="buttonisDockerView">02</dca>
+                    <dca class="example" id="buttonisDockerView">03</dca>
+                    <dca class="example" id="buttonisDockerView">04</dca>
+                    <dca class="example" id="buttonisDockerView">05</dca>
+                    <dca class="example" id="buttonisDockerView">06</dca>
+
+
+
                     <div class="column" id="TitleBar">
                         <a>
                             <p class="loader" id="testRunningSpinnerID" style="visibility: hidden; float: right;">_.-</p>

@@ -194,6 +194,7 @@ function updateStartStopElement(element) {
         startTimer();
         updateSession();
         startTestAPIRequest();
+        updatePauseResumeElement(document.getElementById('startButtonID'));
         return;
     }
     if (text == 'STOP'){
@@ -202,9 +203,11 @@ function updateStartStopElement(element) {
         element.innerText = 'START';
         element.className = "button is-primary is-inverted";
         document.getElementById('testRunningSpinnerID').style.visibility = "hidden";
+        clearSessionByID(sessionID);
         showHideDropdown('visible');
         disableEnableInput(false);
         document.getElementById('editTestConfigID').disabled = true;
+        forceStopAllContainers();
     }
 }
 
