@@ -1,4 +1,8 @@
-
+/**
+ * All the requests implemented in the current application are available here
+ *
+ * TODO: Create a wrapper that is responsible for generating the needed request : avoid code duplication and redundancy.
+ */
 
 function getBranchList() {
 
@@ -24,8 +28,6 @@ function getBranchList() {
             $('#responseTextField').val(rsp);
             showDropDown(rsp);
             $('#responseTextField').click();
-
-            return rsp;
         },
         error: function(response) {
             console.log("Request FAIL");
@@ -98,6 +100,7 @@ function deployBranch(branch) {
 }
 
 function updateSession() {
+
     $('#responseTextField').val("");
 
     format    = 'jsonp';
@@ -119,15 +122,16 @@ function updateSession() {
         data: {
             sessionID,
             _id,
-            usersRateInput,
+            projectID,
             totalUsers,
             testNameID,
-            startTimerDateObj,
-            // projectID,
-            testStatus
+            testStatus,
+            usersRateInput,
+            maxContainerUsers,
+            startTimerDateObj
         },
         success: function(response) {
-            console.log("Request SUCCESS");
+            // console.log("Request SUCCESS");
             let rsp = JSON.stringify(response, undefined, 4);
             $('#responseTextField').val(rsp);
         },
@@ -142,8 +146,6 @@ function clearAllSessions() {
     sessionID = "";
     clearSessionByID(sessionID);
     sessionID = getCookie(cookieName);
-    if(sessionID)
-        reload();
 }
 
 function clearSessionByID(sessionID) {
@@ -202,7 +204,6 @@ function forceStopAllContainers() {
     });
 }
 
-
 function getStats() {
 
     setInterval(function () {
@@ -217,18 +218,17 @@ function getStats() {
                 'Content-Type': 'application/x-www-form-urlencoded',
             },
             success: function(response) {
-                console.log("Request SUCCESS");
+                parsedMemoryObject = response.memv;
 
-                memObject = response.memv;
-                memFree = memObject.memFree;
-                memUsed = memObject.memUsed;
-                memoryTotal = memObject.memoryTotal;
-                cpuValue = response.cpu;
+                memoryTotal = parsedMemoryObject.memoryTotal;
+                memFree     = parsedMemoryObject.memFree;
+                memUsed     = parsedMemoryObject.memUsed;
+                cpuValue    = response.cpu;
 
+                document.getElementById("cpuUsageID").innerHTML = "  " + cpuValue + " %";
                 document.getElementById("tMemID").innerHTML = "  " + memoryTotal;
                 document.getElementById("fMemID").innerHTML = "  " + memFree;
                 document.getElementById("uMemID").innerHTML = "  " + memUsed;
-                document.getElementById("cpuUsageID").innerHTML = "  " + cpuValue + " %";
             },
             error: function() {
                 console.log("Request FAIL");
@@ -339,8 +339,8 @@ function getSessionByID(sessionID) {
 function startTestAPIRequest() {
     $('#responseTextField').val("");
 
-    var activeThreads = 200;
     var sessionID = getCookie(cookieName);
+    var activeThreads = maxContainerUsers
 
     format   = 'jsonp';
     hostName = 'http://163.172.129.226:5005/evaluateRampup';
@@ -353,8 +353,8 @@ function startTestAPIRequest() {
             'Content-Type': 'application/x-www-form-urlencoded',
         },
         data: {
-            activeThreads,
-            sessionID
+            sessionID,
+            activeThreads
         },
         success: function(response) {
             console.log("Request SUCCESS");
@@ -368,6 +368,109 @@ function startTestAPIRequest() {
     });
 }
 
+function getInfluxStatus() {
+
+    hostName  = 'http://163.172.129.226:8086/query?pretty=true';
+    db = "jmeter";
+    q = "select distinct(suite) from (select rate,suite from total where time > now()-40s)";
+
+    $.ajax({
+        url: hostName,
+        type: 'POST',
+        accept: 'application/json',
+        dataType: 'json',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        data: {
+            db,
+            q
+        },
+        success: function(response) {
+            console.log("Request SUCCESS");
+            let rsp = JSON.stringify(response, undefined, 4);
+            $('#responseTextField').val(rsp);
+            buildContainerList(response);
+        },
+        error: function(response) {
+            console.log("Request FAIL");
+            $('#responseTextField').val(response);
+        }
+    });
+}
+
+function getContainerInfoByID(sessionID) {
+    $('#responseTextField').val("");
+
+    format   = 'jsonp';
+    hostName = 'http://163.172.129.226:5005/getSession';
+    $.ajax({
+        url: hostName,
+        type: 'GET',
+        accept: 'application/json',
+        dataType: 'json',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        data: {
+            sessionID
+        },
+        success: function(response) {
+            console.log("Request SUCCESS");
+            let rsp = JSON.stringify(response, undefined, 4);
+            addContainerDownState(response);
+            $('#responseTextField').val(rsp);
+        },
+        error: function(response) {
+            console.log("Request FAIL");
+            $('#responseTextField').val(response);
+        }
+    });
+}
+
+
+function applyCustomRepo() {
+
+    $('#responseTextField').val("");
+    var gitRepoUrl = document.getElementById('importGitRepoID').value
+    var branchName = 'master'
+
+    format   = 'jsonp';
+    hostName = 'http://163.172.129.226:5005/checkoutRepo';
+    $.ajax({
+        url: hostName,
+        type: 'GET',
+        accept: 'application/json',
+        dataType: 'json',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        data: {
+            gitRepoUrl,
+            branchName
+        },
+        success: function(response) {
+            console.log("Request SUCCESS");
+            let rsp = JSON.stringify(response, undefined, 4);
+            addContainerDownState(response);
+            $('#responseTextField').val(rsp);
+        },
+        error: function(response) {
+            console.log("Request FAIL");
+            $('#responseTextField').val(response);
+        }
+    });}
+
+
+function getContainerHealth() {
+    healthLoop = setInterval(function () {
+        getContainerInfoByID(sessionID);
+        sleep(500);
+        getInfluxStatus();
+        if (testStatus == 0)
+            clearInterval(healthLoop);
+    }, 10 * 1000)
+}
 
 function showDropDown(response) {
     listObj = JSON.parse(response).branchList;
@@ -377,7 +480,7 @@ function showDropDown(response) {
 function showpROJECTSDropDown(response) {
 
     listObj = JSON.parse(response).projects;
-    buildSelectProjectDropdown('select-Project', listObj)
+    buildSelectProjectDropdown('select-Project', listObj);
 }
 
 function clearResponseFunction() {

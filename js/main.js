@@ -1,11 +1,18 @@
-/* When the user clicks on the button,
-toggle between hiding and showing the dropdown content */
-
-var startTimerDateObj;
+/**
+ *  This is the main JS.
+ *  It is responsible for managing the single page controller web page.
+ *
+ *  TODO: Add comments in every method - scope, input and output.
+ */
 
 var totalUsers;
+var projectID = '';
+var sessionID;
 var testStatus = 0;
+var startTimerDateObj;
+var noOfContainers = 2;
 var loadFromSession = 0;
+var maxContainerUsers = "20";
 var cookieName = "ControllerSessionID";
 
 $(document).mouseup(function(e) {
@@ -38,23 +45,20 @@ function s4() {
 }
 
 function cookieHandler() {
-
     var cookieValue = getCookie(cookieName);
     console.log("Cookie is: " + cookieName + "-> " + cookieValue);
     if (cookieValue.length <= 16) {
-        var sessionUUID = generateUUID();
-        setCookie(cookieName, sessionUUID, 1)
+        setCookie(cookieName, sessionUUID, 1);
+        sessionUUID = generateUUID();
+
     }
 
     setInterval(
         function () {
-
             if (!checkControllerData())
                 return;
-
-            // updateSession();
-        },
-    5000);
+            updateSession();
+        }, 60 * 1000);
 }
 
 function setCookie(cname, cvalue, exdays) {
@@ -112,17 +116,13 @@ function buildSessionSelectDropdown(divname, list) {
         $('#selectSessionNavBarID').show();
         return;
     }
-
-    // $('#selectSessionNavBarID').show();
     if ($(divname).children().length > 0)
         return;
-
 
     var newDiv = document.createElement('div');
     var html = '', i;
     for(i = 0; i < list.length; i++) {
         html += '<a class=\"navbar-item is-active\" onclick=\"getSessionByID(\'' + list[i].sessionID + "\')\"><strong>Select session :</strong>" + list[i].testNameID + '</a>' + '<button class="delete" style="float: right" onclick="clearSessionByID(list[i].sessionID)"></button>'
-        // html += '<a href=\"#\" class=\"dropdown-item\" onclick=\"deployBranch(\'' +  list[i].substring(7, list[i].length) + "\')\" id=\"" +  list[i] + '\"' + "<p> Deploy '<strong>" + list[i] + "</strong>" + '\' ' +  'branch' + '</p></a>' ;
     }
 
     html += '</div>';
@@ -154,18 +154,17 @@ function buildSelectProjectDropdown(divname, list) {
     document.getElementById(divname).appendChild(newDiv);
 }
 
-
 function auto_grow(element) {
     element.style.height = "5px";
     element.style.height = (element.scrollHeight) + "px";
 }
 
-function disableEnableInput(state) {
-    if (document.getElementById("testNameID").disabled == state)
+function disableEnableTestConfigInput(configInputState) {
+    if (document.getElementById("testNameID").disabled == configInputState)
         return;
-    document.getElementById("testNameID").disabled = state;
-    document.getElementById("totalUsersID").disabled = state;
-    document.getElementById("usersRateID").disabled = state;
+    document.getElementById("testNameID").disabled = configInputState;
+    document.getElementById("usersRateID").disabled = configInputState;
+    document.getElementById("totalUsersID").disabled = configInputState;
 }
 
 function showHideDropdown(state) {
@@ -184,16 +183,19 @@ function updateStartStopElement(element) {
 
     var text = element.innerText;
     if (text == 'START') {
-        document.getElementById("timerID").innerHTML = "0h 0m 0s";
         testStatus = 1;
         element.innerText = 'STOP';
         element.className = "button is-danger is-active";
-        document.getElementById('testRunningSpinnerID').style.visibility = "visible";
+        document.getElementById("timerID").innerHTML = "0h 0m 0s";
         document.getElementById('editTestConfigID').disabled = false;
-        disableEnableInput(true);
+        document.getElementById('testRunningSpinnerID').style.visibility = "visible";
+
+        disableEnableTestConfigInput(true);
         startTimer();
         updateSession();
-        startTestAPIRequest();
+        getContainerHealth();
+        if (loadFromSession == 0)
+            startTestAPIRequest();
         updatePauseResumeElement(document.getElementById('pauseButtonId'));
         return;
     }
@@ -202,28 +204,27 @@ function updateStartStopElement(element) {
         loadFromSession = 0;
         element.innerText = 'START';
         element.className = "button is-primary is-inverted";
+        document.getElementById('editTestConfigID').disabled = true;
         document.getElementById('testRunningSpinnerID').style.visibility = "hidden";
         clearSessionByID(sessionID);
         showHideDropdown('visible');
-        disableEnableInput(false);
-        document.getElementById('editTestConfigID').disabled = true;
+        disableEnableTestConfigInput(false);
         forceStopAllContainers();
     }
 }
 
 function updatePauseResumeElement(element) {
-    text = element.innerText;
-    if (text == 'PAUSE') {
-        element.innerText = 'RESUME';
+    if (testStatus == 1) {
         element.className = "button is-success is-hovered";
+        element.innerText = 'RESUME';
         testStatus = 2;
         updateSession();
         return;
     }
-    element.innerText = 'PAUSE';
-    element.className = "button is-warning is-active";
     testStatus = 1;
     updateSession();
+    element.innerText = 'PAUSE';
+    element.className = "button is-warning is-active";
 }
 
 function startTimer() {
@@ -246,7 +247,6 @@ function startTimer() {
 
         // Find the distance between now an the count down date
         var distance = now - startTimerDate;
-        console.log(distance)
 
         // Time calculations for days, hours, minutes and seconds
         var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
@@ -256,8 +256,7 @@ function startTimer() {
 
         if (testStatus >= 1) {
             // Display the result in the element with id="timerID"
-            document.getElementById("timerID").innerHTML = hours + "h "
-                + minutes + "m " + seconds + "s ";
+            document.getElementById("timerID").innerHTML = hours + "h " + minutes + "m " + seconds + "s ";
         }
     }, 1000);
 }
@@ -278,8 +277,11 @@ function checkControllerData() {
         return false;
     if (testNameID == '')
         return false;
-    // if (projectID == '')
-    //     return false;
+    if (projectID == '')
+        return false;
+    if (sessionID == '')
+        return false;
+
     return true
 }
 
@@ -307,9 +309,8 @@ function showTab(evt, tabName) {
         return;
     }
     document.getElementById('testScenarioID').style.visibility = "hidden";
-    if (testStatus == 0) {
+    if (testStatus == 0)
         document.getElementById('editTestConfigID').disabled = true;
-    }
 }
 
 function applySessionDetails(sessionDetails) {
@@ -323,14 +324,69 @@ function applySessionDetails(sessionDetails) {
     testStatus = sessionDetails.testStatus;
     projectID = sessionDetails.projectID;
 
-
-    updateStartStopElement(document.getElementById('startButtonID'));
     showHideDropdown('hidden');
-    disableEnableInput(true);
+    disableEnableTestConfigInput(true);
+    updateStartStopElement(document.getElementById('startButtonID'));
 }
 
 function useSelectProject (projectPath) {
-    projectID = projectPath;
+    projectID = projectPath.substring(projectPath.lastIndexOf('/') + 1, projectPath.length);
     $('#dropdown-menu3').hide();
-
 }
+
+function buildContainerList(response) {
+
+    if (!response.results[0].hasOwnProperty('series'))
+        return;
+
+    var results = response.results[0];
+    var series = results.series[0];
+    var values = series.values;
+
+    for (var i = 0; i < values.length; i++) {
+        console.log(values[i]);
+        var objectID = values[i][1];
+        console.log(document.getElementById(objectID));
+        document.getElementById(objectID).style.animationName = 'dockerContainerAnim';
+    }
+}
+
+function addContainerDownState(response) {
+    if (response.length < 1) {
+        document.getElementById('dcaDivID').remove();
+        var newDca = document.createElement('dcaDivID');
+        var html = "<dca class=\"dca\" id=\"buttonisDockerView\">WebServer</dca><dca class=\"dca\" id=\"buttonisDockerView\">Influx-DB</dca><p>"
+        newDca.innerHTML = html;
+        document.getElementById('main-nav-barID').appendAfter(document.getElementById("memoryTableID"));
+        return;
+    }
+    noOfContainers = response.containers.length;
+
+    var newDca = document.createElement('dca');
+    var html = '';
+
+    for (var i = 0; i< noOfContainers; i++) {
+        var containerName = response.containers[i];
+        var label = containerName.substring(containerName.length - 2, containerName.length);
+        if (document.getElementById(containerName) == undefined)
+            html += '<dca class=\"dca\" id=\"' + containerName + '\" style="padding: 2px;margin: 1.5px;">' + label + '</dca>'
+    }
+
+    html +=  '</select>';
+    newDca.innerHTML = html;
+    document.getElementById('dcaDivID').appendChild(newDca);
+
+    for (var i = 0; i< noOfContainers; i++) {
+        document.getElementById(response.containers[i]).style.animationName = 'dockerContainerAnimDown';
+    }
+}
+
+function sleep(delay) {
+    var start = new Date().getTime();
+    while (new Date().getTime() < start + delay);
+}
+
+Element.prototype.appendAfter = function (element) {
+    element.parentNode.insertBefore(this, element.nextSibling);
+},false;
+
