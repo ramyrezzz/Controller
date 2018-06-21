@@ -216,14 +216,14 @@ function updateStartStopElement(element) {
 function updatePauseResumeElement(element) {
     if (testStatus == 1) {
         element.className = "button is-success is-hovered";
-        element.innerText = 'RESUME';
+        element.innerText = 'PAUSE';
         testStatus = 2;
         updateSession();
         return;
     }
     testStatus = 1;
     updateSession();
-    element.innerText = 'PAUSE';
+    element.innerText = 'RESUME';
     element.className = "button is-warning is-active";
 }
 
@@ -381,6 +381,14 @@ function addContainerDownState(response) {
     }
 }
 
+function fetchRepoJMX() {
+    document.getElementById("applyGitRepoID").className = 'button is-loading';
+
+    applyCustomRepo();
+
+    document.getElementById("applyGitRepoID").className = 'button';
+}
+
 function sleep(delay) {
     var start = new Date().getTime();
     while (new Date().getTime() < start + delay);
@@ -389,4 +397,15 @@ function sleep(delay) {
 Element.prototype.appendAfter = function (element) {
     element.parentNode.insertBefore(this, element.nextSibling);
 },false;
+
+$(document).ready(function(){
+    $('#applyGitRepoID').attr('disabled',true);
+    $('#importGitRepoID').keyup(function(){
+        if (document.getElementById("importGitRepoID").value.length > 0 && document.getElementById("importGitRepoID").value.endsWith(".git")) {
+            document.getElementById("applyGitRepoID").disabled = false;
+            return;
+        }
+        document.getElementById("applyGitRepoID").disabled = true;
+    })
+});
 

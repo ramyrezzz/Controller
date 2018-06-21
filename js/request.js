@@ -429,7 +429,7 @@ function getContainerInfoByID(sessionID) {
 }
 
 
-function applyCustomRepo() {
+function applyCustomRepo(element) {
 
     $('#responseTextField').val("");
     var gitRepoUrl = document.getElementById('importGitRepoID').value
@@ -452,14 +452,14 @@ function applyCustomRepo() {
         success: function(response) {
             console.log("Request SUCCESS");
             let rsp = JSON.stringify(response, undefined, 4);
-            addContainerDownState(response);
             $('#responseTextField').val(rsp);
         },
         error: function(response) {
             console.log("Request FAIL");
             $('#responseTextField').val(response);
         }
-    });}
+    });
+}
 
 
 function getContainerHealth() {
@@ -469,7 +469,7 @@ function getContainerHealth() {
         getInfluxStatus();
         if (testStatus == 0)
             clearInterval(healthLoop);
-    }, 10 * 1000)
+    }, 30 * 1000)
 }
 
 function showDropDown(response) {
