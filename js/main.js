@@ -7,7 +7,7 @@
 
 var totalUsers;
 var projectID = '';
-var sessionID;
+var sessionID = '';
 var testStatus = 0;
 var startTimerDateObj;
 var noOfContainers = 2;
@@ -45,12 +45,12 @@ function s4() {
 }
 
 function cookieHandler() {
+
     var cookieValue = getCookie(cookieName);
     console.log("Cookie is: " + cookieName + "-> " + cookieValue);
     if (cookieValue.length <= 16) {
-        setCookie(cookieName, sessionUUID, 1);
-        sessionUUID = generateUUID();
-
+        sessionID = generateUUID();
+        setCookie(cookieName, sessionID, 1);
     }
 
     setInterval(
@@ -87,12 +87,7 @@ function getCookie(cname) {
 }
 
 function buildBranchDeployDropdown(divname, list) {
-
-    elementCount = document.getElementById(divname).childElementCount;
-    if (elementCount >= 1) {
-        $('#dropdown-menu2').show();
-        return;
-    }
+    document.getElementById(divname).innerHTML = '';
 
     var newDiv = document.createElement('div');
     var html = '', i;
@@ -110,12 +105,7 @@ function buildBranchDeployDropdown(divname, list) {
 }
 
 function buildSessionSelectDropdown(divname, list) {
-
-    elementCount = document.getElementById(divname).childElementCount;
-    if (elementCount >= 1) {
-        $('#selectSessionNavBarID').show();
-        return;
-    }
+    document.getElementById(divname).innerHTML = '';
     if ($(divname).children().length > 0)
         return;
 
@@ -132,12 +122,7 @@ function buildSessionSelectDropdown(divname, list) {
 }
 
 function buildSelectProjectDropdown(divname, list) {
-
-    elementCount = document.getElementById(divname).childElementCount;
-    if (elementCount >= 1) {
-        $('#dropdown-menu3').show();
-        return;
-    }
+    document.getElementById(divname).innerHTML = '';
 
     var newDiv = document.createElement('div');
     var html = '', i;
@@ -189,6 +174,7 @@ function updateStartStopElement(element) {
         document.getElementById("timerID").innerHTML = "0h 0m 0s";
         document.getElementById('editTestConfigID').disabled = false;
         document.getElementById('testRunningSpinnerID').style.visibility = "visible";
+        document.getElementById('pauseButtonId').style.visibility = "visible"
 
         disableEnableTestConfigInput(true);
         startTimer();
@@ -206,6 +192,9 @@ function updateStartStopElement(element) {
         element.className = "button is-primary is-inverted";
         document.getElementById('editTestConfigID').disabled = true;
         document.getElementById('testRunningSpinnerID').style.visibility = "hidden";
+        document.getElementById("selectedProjectID").style.visibility = "hidden";
+        document.getElementById('pauseButtonId').style.visibility = "hidden"
+
         clearSessionByID(sessionID);
         showHideDropdown('visible');
         disableEnableTestConfigInput(false);
@@ -309,8 +298,9 @@ function showTab(evt, tabName) {
         return;
     }
     document.getElementById('testScenarioID').style.visibility = "hidden";
-    if (testStatus == 0)
+    if (testStatus == 0) {
         document.getElementById('editTestConfigID').disabled = true;
+    }
 }
 
 function applySessionDetails(sessionDetails) {
@@ -331,6 +321,9 @@ function applySessionDetails(sessionDetails) {
 
 function useSelectProject (projectPath) {
     projectID = projectPath.substring(projectPath.lastIndexOf('/') + 1, projectPath.length);
+    var label = "Selected project: " + projectID
+    document.getElementById("selectedProjectID").innerText = label;
+    document.getElementById("selectedProjectID").style.visibility = "visible";
     $('#dropdown-menu3').hide();
 }
 
@@ -409,3 +402,9 @@ $(document).ready(function(){
     })
 });
 
+$(document).ready(function () {
+    if (testStatus == 0)
+        document.getElementById('pauseButtonId').disabled = true;
+    else
+        document.getElementById('pauseButtonId').disabled = false;
+})

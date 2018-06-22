@@ -461,6 +461,37 @@ function applyCustomRepo(element) {
     });
 }
 
+function uploadFile() {
+    console.log("File Uploaded here !")
+    $('#responseTextField').val("");
+    hostName = 'http://163.172.129.226:5005/upload';
+    var form_data = new FormData($('#upload-file')[0]);
+    $.ajax({
+        type: 'POST',
+        url: hostName,
+        data: form_data,
+        contentType: false,
+        cache: false,
+        processData: false,
+        async: false,
+        success: function(response) {
+            console.log("Request SUCCESS");
+            let rsp = JSON.stringify(response, undefined, 4);
+            document.getElementById("inputFileID").value = "";
+            if (response.fileName != undefined)
+                document.getElementById("uploadTitleID").innerText = response.fileName + " Uploaded OK";
+            else
+                document.getElementById("uploadTitleID").innerText = "Uploaded Failed";
+
+            $('#responseTextField').val(rsp);
+        },
+        error: function(response) {
+            console.log("Request FAIL");
+            $('#responseTextField').val(response);
+        }
+    });
+}
+
 
 function getContainerHealth() {
     healthLoop = setInterval(function () {
