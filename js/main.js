@@ -5,15 +5,15 @@
  *  TODO: Add comments in every method - scope, input and output.
  */
 
-var totalUsers;
-var projectID = '';
-var sessionID = '';
-var testStatus = 0;
-var startTimerDateObj;
-var noOfContainers = 2;
-var loadFromSession = 0;
-var maxContainerUsers = "20";
-var cookieName = "ControllerSessionID";
+let totalUsers;
+let projectID = '';
+let sessionID = '';
+let testStatus = 0;
+let startTimerDateObj;
+let noOfContainers = 2;
+let loadFromSession = 0;
+let maxContainerUsers = "20";
+let cookieName = "ControllerSessionID";
 
 $(document).mouseup(function(e) {
     var container = $(".dropdown-menu");
@@ -130,8 +130,9 @@ function buildSelectProjectDropdown(divname, list) {
     if ($(divname).children().length > 0)
         return;
 
-    for(i = 0; i < list.length; i++)
-        html += '<a href=\"#\" class=\"dropdown-item\" onclick=\"useSelectProject(\'' +  list[i] + "\')\" id=\"" +  list[i] + '\"' + "<p> Use '<strong>" + list[i].substring(14, list[i].length - 4) + "</strong>" + '\' ' +  'project' + '</p></a>' ;
+    for(i = 0; i < list.length; i++) {
+        html += '<a href=\"#\" class=\"dropdown-item\" onclick=\"useSelectProject(\'' +  list[i].testName + "\','" +  list[i].threadGroups +"\' )\" id=\"" +  list[i].testName + '\"' + "<p> Use '<strong>" + list[i].testName.substring(14, list[i].testName.length - 4) + "</strong>" + '\' ' +  'project' + '</p></a>';
+    }
 
     html += '</select>';
     newDiv.innerHTML= html;
@@ -168,7 +169,6 @@ function updateStartStopElement(element) {
 
     var text = element.innerText;
     if (text == 'START') {
-        testStatus = 1;
         element.innerText = 'STOP';
         element.className = "button is-danger is-active";
         document.getElementById("timerID").innerHTML = "0h 0m 0s";
@@ -203,16 +203,24 @@ function updateStartStopElement(element) {
 }
 
 function updatePauseResumeElement(element) {
+
     if (testStatus == 1) {
         element.className = "button is-success is-hovered";
-        element.innerText = 'PAUSE';
+        element.innerText = 'RESUME';
         testStatus = 2;
         updateSession();
         return;
     }
+    if(testStatus == 0) {
+        testStatus = 1;
+        updateSession();
+        element.innerText = 'PAUSE';
+        element.className = "button is-warning is-active";
+        return;
+    }
     testStatus = 1;
     updateSession();
-    element.innerText = 'RESUME';
+    element.innerText = 'PAUSE';
     element.className = "button is-warning is-active";
 }
 
@@ -256,9 +264,12 @@ function close_window() {
 
 function checkControllerData() {
 
+    console.log(sessionID)
+
     usersRateInput = document.getElementById("usersRateID").value;
     totalUsers = document.getElementById("totalUsersID").value;
     testNameID = document.getElementById("testNameID").value;
+    sessionID = getCookie(cookieName)
 
     if (totalUsers == '')
         return false;
@@ -319,10 +330,23 @@ function applySessionDetails(sessionDetails) {
     updateStartStopElement(document.getElementById('startButtonID'));
 }
 
-function useSelectProject (projectPath) {
-    projectID = projectPath.substring(projectPath.lastIndexOf('/') + 1, projectPath.length);
-    var label = "Selected project: " + projectID
+function useSelectProject(testName, testGroupNames) {
+    projectID = testName.substring(testName.lastIndexOf('/') + 1, testName.length);
+
+    var label = "Selected project: " + projectID;
+
+    var tableBody = '<table class="table is-bordered"><thead><tr><th> Thread Group </th><th> Distribution </th></tr></thead>';
+
+    var distribution = "100%"
+    var newTable = document.createElement('table');
+
+    for (testGroupName in testGroupNames) {
+        tableBody += "<tbody><tr><td>" + testGroupName + " </td><td> " + distribution +" </td></tr></tbody>";
+    }
+    tableBody += "</table>"
+
     document.getElementById("selectedProjectID").innerText = label;
+    newTable.innerHTML = tableBody;
     document.getElementById("selectedProjectID").style.visibility = "visible";
     $('#dropdown-menu3').hide();
 }

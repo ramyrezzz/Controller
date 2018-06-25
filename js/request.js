@@ -58,7 +58,7 @@ function getProjects() {
             console.log("Request success");
             let rsp = JSON.stringify(response, undefined, 4);
             $('#responseTextField').val(rsp);
-            showpROJECTSDropDown(rsp);
+            showpROJECTSDropDown(response);
             $('#responseTextField').click();
             return rsp;
         },
@@ -509,9 +509,9 @@ function showDropDown(response) {
 }
 
 function showpROJECTSDropDown(response) {
-
-    listObj = JSON.parse(response).projects;
-    buildSelectProjectDropdown('select-Project', listObj);
+    var listObj = response.results;
+    var projects = listObj.projects;
+    buildSelectProjectDropdown('select-Project', projects);
 }
 
 function clearResponseFunction() {
