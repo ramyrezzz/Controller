@@ -169,6 +169,7 @@ function clearSessionByID(sessionID) {
             console.log("Request SUCCESS");
             let rsp = JSON.stringify(response, undefined, 4);
             $('#responseTextField').val(rsp);
+            getAllSessions();
         },
         error: function(response) {
             console.log("Request FAIL");

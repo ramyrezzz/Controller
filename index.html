@@ -49,10 +49,35 @@
                 from {background-color: #2cb9d9;}
                 to {background-color: #b91e13;}
             }
+            #overlay{
+                display: none;
+                position: fixed;
+                top: 0%;
+                left: 0%;
+                width: 100%;
+                height: 100%;
+                background-color: black;
+                opacity: 0.8;
+                z-index: 1001;
+                color: #0d8aee;
+            }
+            #loaderCcontent{
+                position: absolute;
+                display: none;
+                width: 90px;
+                height: 90px;
+                /*padding: 16px;*/
+                /*border: 16px solid #0d8aee;*/
+                /*background-color: #0a9fe2;*/
+                z-index:1002;
+                /*color: black;*/
+            }
         </style>
     </head>
-
     <body class="theme-page" style="background-color:#2cb9d9; min-height: 1080px">
+    <div class="is-loading" id="overlay">
+        <div class="loader" id="loaderCcontent"></div>
+    </div>
     <section class="hero is-primary">
             <div class="hero-head">
                 <img src="img/accesa_logo_bg.png" style="height: 68px; width: auto;float:right;">
@@ -385,6 +410,7 @@
         </div>
     </section>
     <script>
+        loadPage();
         cookieHandler();
         showTab(event, 'mainControllerID');
     </script>

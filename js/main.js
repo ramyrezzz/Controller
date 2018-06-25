@@ -22,10 +22,6 @@ $(document).mouseup(function(e) {
         container.hide();
 });
 
-function activateDropDown(objId) {
-    document.getElementById(objId).classList.toggle("show");
-}
-
 function reload() {
     location.reload()
 }
@@ -112,7 +108,7 @@ function buildSessionSelectDropdown(divname, list) {
     var newDiv = document.createElement('div');
     var html = '', i;
     for(i = 0; i < list.length; i++) {
-        html += '<a class=\"navbar-item is-active\" onclick=\"getSessionByID(\'' + list[i].sessionID + "\')\"><strong>Select session :</strong>" + list[i].testNameID + '</a>' + '<button class="delete" style="float: right" onclick="clearSessionByID(list[i].sessionID)"></button>'
+        html += '<a class=\"navbar-item is-active\" onclick=\"getSessionByID(\'' + list[i].sessionID + "\')\"><strong>Select session :</strong>" + list[i].testNameID + '</a>' + '<button class="delete" style="float: right" onclick=\"clearSessionByID(\'' + list[i].sessionID + '\')\"></button>'
     }
 
     html += '</div>';
@@ -131,6 +127,7 @@ function buildSelectProjectDropdown(divname, list) {
         return;
 
     for(i = 0; i < list.length; i++) {
+        console.log( list[i].threadGroups)
         html += '<a href=\"#\" class=\"dropdown-item\" onclick=\"useSelectProject(\'' +  list[i].testName + "\','" +  list[i].threadGroups +"\' )\" id=\"" +  list[i].testName + '\"' + "<p> Use '<strong>" + list[i].testName.substring(14, list[i].testName.length - 4) + "</strong>" + '\' ' +  'project' + '</p></a>';
     }
 
@@ -284,7 +281,6 @@ function checkControllerData() {
 
     return true
 }
-
 function showTab(evt, tabName) {
     // Declare all variables
     var i, tabcontent, tablinks;
@@ -334,19 +330,27 @@ function useSelectProject(testName, testGroupNames) {
     projectID = testName.substring(testName.lastIndexOf('/') + 1, testName.length);
 
     var label = "Selected project: " + projectID;
+    var newDiv = document.createElement('div');
+    var html = '';
 
     var tableBody = '<table class="table is-bordered"><thead><tr><th> Thread Group </th><th> Distribution </th></tr></thead>';
+    var distribution = 100;
 
-    var distribution = "100%"
-    var newTable = document.createElement('table');
+    testGroupNames = testGroupNames.split(",");
 
-    for (testGroupName in testGroupNames) {
-        tableBody += "<tbody><tr><td>" + testGroupName + " </td><td> " + distribution +" </td></tr></tbody>";
+    console.log(testGroupNames)
+
+    distribution = distribution / testGroupNames.length;
+
+    for(i = 0; i < testGroupNames.length; i++) {
+        tableBody += "<tbody><tr><td>" + testGroupNames[i] + " </td><td> " + distribution +"% </td></tr></tbody>";
     }
     tableBody += "</table>"
+    newDiv.innerHTML = tableBody;
 
     document.getElementById("selectedProjectID").innerText = label;
-    newTable.innerHTML = tableBody;
+    document.getElementById("selectedProjectID").appendChild(newDiv);
+
     document.getElementById("selectedProjectID").style.visibility = "visible";
     $('#dropdown-menu3').hide();
 }
@@ -432,3 +436,26 @@ $(document).ready(function () {
     else
         document.getElementById('pauseButtonId').disabled = false;
 })
+
+function loadPage() {
+    $('#overlay').show();
+    $('#loaderCcontent').show().center();
+
+    setTimeout(function(){
+        $("#overlay").fadeOut();
+    }, 1000);
+}
+
+$.fn.center = function () {
+    this.css("position","absolute");
+    this.css("top", Math.max(0, (
+        ($(window).height() - $(this).outerHeight()) / 2) +
+        $(window).scrollTop()) + "px"
+    );
+    this.css("left", Math.max(0, (
+        ($(window).width() - $(this).outerWidth()) / 2) +
+        $(window).scrollLeft()) + "px"
+    );
+    return this;
+}
+
