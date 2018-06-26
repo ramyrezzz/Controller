@@ -51,7 +51,7 @@ function cookieHandler() {
 
     setInterval(
         function () {
-            if (!checkControllerData())
+            if (!checkControllerData() || testStatus == 0)
                 return;
             updateSession();
         }, 60 * 1000);
@@ -190,6 +190,7 @@ function updateStartStopElement(element) {
         document.getElementById('testRunningSpinnerID').style.visibility = "hidden";
         document.getElementById("selectedProjectID").style.visibility = "hidden";
         document.getElementById('pauseButtonId').style.visibility = "hidden"
+        removeContainersAfterStop();
 
         clearSessionByID(sessionID);
         showHideDropdown('visible');
@@ -258,8 +259,6 @@ function close_window() {
 }
 
 function checkControllerData() {
-
-    console.log(sessionID)
 
     usersRateInput = document.getElementById("usersRateID").value;
     totalUsers = document.getElementById("totalUsersID").value;
@@ -360,20 +359,20 @@ function buildContainerList(response) {
 
     for (var i = 0; i < values.length; i++) {
         var objectID = values[i][1];
-        document.getElementById(objectID).style.animationName = 'dockerContainerAnim';
+        if (document.getElementById(objectID) != undefined)
+            document.getElementById(objectID).style.animationName = 'dockerContainerAnim';
     }
 }
 
 function addContainerDownState(response) {
-    if (response.length < 1) {
-        document.getElementById('dcaDivID').remove();
-        var newDca = document.createElement('dcaDivID');
-        var html = "<dca class=\"dca\" id=\"buttonisDockerView\">WebServer</dca><dca class=\"dca\" id=\"buttonisDockerView\">Influx-DB</dca><p>"
-        html +=  '</select>';
-        newDca.innerHTML = html;
-        document.getElementById('main-nav-barID').appendAfter(document.getElementById("memoryTableID"));
+
+    if (response.length < 1)
         return;
-    }
+
+    if (response == undefined)
+        return;
+    if (!response.hasOwnProperty("containers"))
+        return;
 
     noOfContainers = response.containers.length;
     var newDca = document.createElement('dca');
@@ -409,10 +408,6 @@ function sleep(delay) {
     var start = new Date().getTime();
     while (new Date().getTime() < start + delay);
 }
-
-Element.prototype.appendAfter = function (element) {
-    element.parentNode.insertBefore(this, element.nextSibling);
-},false;
 
 $(document).ready(function(){
     $('#applyGitRepoID').attr('disabled',true);
@@ -454,3 +449,17 @@ $.fn.center = function () {
     return this;
 }
 
+function removeContainersAfterStop() {
+    
+    let myNode = document.getElementById("dcaDivID");
+    for (let i = 1; i <= myNode.childElementCount + 6; i++) {
+        var childNode = myNode.childNodes[i];
+        if (childNode == undefined)
+            continue;
+        if (childNode.childNodes[0] == undefined)
+            continue;
+        if (childNode.childNodes[0].length > 3)
+            continue;
+        childNode.parentNode.removeChild(childNode);
+    }
+}

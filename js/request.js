@@ -430,7 +430,7 @@ function getContainerInfoByID(sessionID) {
 }
 
 
-function applyCustomRepo(element) {
+function applyCustomRepo() {
 
     $('#responseTextField').val("");
     var gitRepoUrl = document.getElementById('importGitRepoID').value
@@ -466,7 +466,7 @@ function uploadFile() {
     console.log("File Uploaded here !")
     $('#responseTextField').val("");
     hostName = 'http://163.172.129.226:5005/upload';
-    var form_data = new FormData($('#upload-file')[0]);
+    let  form_data = new FormData($('#upload-file')[0]);
     $.ajax({
         type: 'POST',
         url: hostName,
@@ -495,17 +495,17 @@ function uploadFile() {
 
 
 function getContainerHealth() {
-    healthLoop = setInterval(function () {
+    let healthLoop = setInterval(function () {
+        if (testStatus == 0)
+            clearInterval(healthLoop);
         getContainerInfoByID(sessionID);
         sleep(500);
         getInfluxStatus();
-        if (testStatus == 0)
-            clearInterval(healthLoop);
     }, 30 * 1000)
 }
 
 function showDropDown(response) {
-    listObj = JSON.parse(response).branchList;
+    let listObj = JSON.parse(response).branchList;
     buildBranchDeployDropdown('select-Branch', listObj);
 }
 
