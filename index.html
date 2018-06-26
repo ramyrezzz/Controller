@@ -66,11 +66,7 @@
                 display: none;
                 width: 90px;
                 height: 90px;
-                /*padding: 16px;*/
-                /*border: 16px solid #0d8aee;*/
-                /*background-color: #0a9fe2;*/
                 z-index:1002;
-                /*color: black;*/
             }
         </style>
     </head>
@@ -159,6 +155,7 @@
                     </ul>
                 </div>
                 <div id="mainControllerID" class="tabcontent">
+                    <h4 id="selectedProjectID" style="visibility: hidden">Selected project: </h4>
                 </div>
                 <div id="containerControllerID" class="tabcontent">
                     <a class="button is-primary is-inverted"  title="Container UP" onclick="rampUpContianer('start');">Container UP</a>
@@ -382,7 +379,6 @@
                     </div>
                 </div>
             </div>
-            <h4 id="selectedProjectID" style="visibility: hidden">Selected project: </h4>
         <div class="hero-body">
                 <div class="container" id="testScenarioID" style="visibility: visible; float: left">
                     <h5 class="title">

@@ -127,7 +127,6 @@ function buildSelectProjectDropdown(divname, list) {
         return;
 
     for(i = 0; i < list.length; i++) {
-        console.log( list[i].threadGroups)
         html += '<a href=\"#\" class=\"dropdown-item\" onclick=\"useSelectProject(\'' +  list[i].testName + "\','" +  list[i].threadGroups +"\' )\" id=\"" +  list[i].testName + '\"' + "<p> Use '<strong>" + list[i].testName.substring(14, list[i].testName.length - 4) + "</strong>" + '\' ' +  'project' + '</p></a>';
     }
 
@@ -249,7 +248,6 @@ function startTimer() {
         document.getElementById('buttonisDockerView').focus();
 
         if (testStatus >= 1) {
-            // Display the result in the element with id="timerID"
             document.getElementById("timerID").innerHTML = hours + "h " + minutes + "m " + seconds + "s ";
         }
     }, 1000);
@@ -331,18 +329,14 @@ function useSelectProject(testName, testGroupNames) {
 
     var label = "Selected project: " + projectID;
     var newDiv = document.createElement('div');
-    var html = '';
 
     var tableBody = '<table class="table is-bordered"><thead><tr><th> Thread Group </th><th> Distribution </th></tr></thead>';
     var distribution = 100;
 
     testGroupNames = testGroupNames.split(",");
 
-    console.log(testGroupNames)
-
     distribution = distribution / testGroupNames.length;
-
-    for(i = 0; i < testGroupNames.length; i++) {
+    for (let i = 0; i < testGroupNames.length; i++) {
         tableBody += "<tbody><tr><td>" + testGroupNames[i] + " </td><td> " + distribution +"% </td></tr></tbody>";
     }
     tableBody += "</table>"
@@ -365,9 +359,7 @@ function buildContainerList(response) {
     var values = series.values;
 
     for (var i = 0; i < values.length; i++) {
-        console.log(values[i]);
         var objectID = values[i][1];
-        console.log(document.getElementById(objectID));
         document.getElementById(objectID).style.animationName = 'dockerContainerAnim';
     }
 }
@@ -377,27 +369,30 @@ function addContainerDownState(response) {
         document.getElementById('dcaDivID').remove();
         var newDca = document.createElement('dcaDivID');
         var html = "<dca class=\"dca\" id=\"buttonisDockerView\">WebServer</dca><dca class=\"dca\" id=\"buttonisDockerView\">Influx-DB</dca><p>"
+        html +=  '</select>';
         newDca.innerHTML = html;
         document.getElementById('main-nav-barID').appendAfter(document.getElementById("memoryTableID"));
         return;
     }
-    noOfContainers = response.containers.length;
 
+    noOfContainers = response.containers.length;
     var newDca = document.createElement('dca');
     var html = '';
 
-    for (var i = 0; i< noOfContainers; i++) {
+    for (var i = 0; i < noOfContainers; i++) {
         var containerName = response.containers[i];
         var label = containerName.substring(containerName.length - 2, containerName.length);
         if (document.getElementById(containerName) == undefined)
             html += '<dca class=\"dca\" id=\"' + containerName + '\" style="padding: 2px;margin: 1.5px;">' + label + '</dca>'
     }
 
-    html +=  '</select>';
-    newDca.innerHTML = html;
-    document.getElementById('dcaDivID').appendChild(newDca);
+    if (html.length > 11) {
+        html +=  '</select>';
+        newDca.innerHTML = html;
+        document.getElementById('dcaDivID').appendChild(newDca);
+    }
 
-    for (var i = 0; i< noOfContainers; i++) {
+    for (var i = 0; i < noOfContainers; i++) {
         document.getElementById(response.containers[i]).style.animationName = 'dockerContainerAnimDown';
     }
 }
